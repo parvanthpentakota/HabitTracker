@@ -1,10 +1,16 @@
-# Simple Habit Tracker
+from datetime import date
+
+# Display today's date
+today = date.today()
+
+print("Habit Tracker")
+print("Date:", today)
 
 habits = ["Exercise", "Read 10 pages", "Practice coding"]
 
 completed = []
 
-print("Today's Habits:\n")
+print("\nToday's Habits:\n")
 
 for i, habit in enumerate(habits, start=1):
     print(f"{i}. {habit}")
