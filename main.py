@@ -55,3 +55,25 @@ else:
 print("\nTotal completed:", completed_count)
 print("Remaining habits:", remaining)
 print("Progress:", round(progress, 2), "% completed")
+
+# Simple Habit Tracker - Daily Summary
+
+habits = ["Exercise", "Read 10 pages", "Practice coding"]
+
+completed = ["Exercise", "Practice coding"]
+
+print("Today's Habits:")
+for habit in habits:
+    print("-", habit)
+
+print("\nCompleted Habits:")
+for habit in completed:
+    print("-", habit)
+
+total = len(habits)
+done = len(completed)
+
+print("\nSummary")
+print("Total habits:", total)
+print("Completed:", done)
+print("Remaining:", total - done)
