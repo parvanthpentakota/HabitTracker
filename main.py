@@ -1,6 +1,6 @@
 from datetime import date
 
-# Display today's date
+# Show today's date
 today = date.today()
 print("=== Habit Tracker ===")
 print("Date:", today)
@@ -17,6 +17,7 @@ for i, habit in enumerate(habits, start=1):
 print("\nEnter habit number to mark as completed")
 print("Enter 0 to finish")
 
+# Input loop
 while True:
     try:
         choice = int(input("Choice: "))
@@ -29,9 +30,9 @@ while True:
 
             if habit not in completed:
                 completed.append(habit)
-                print(f"{habit} marked as completed ✅")
+                print(f"{habit} completed ✅")
             else:
-                print("Already completed ⚠")
+                print("Already done ⚠")
         else:
             print("Invalid choice ❌")
 
@@ -39,13 +40,20 @@ while True:
         print("Enter a valid number ❌")
 
 # Summary
-print("\n=== Summary ===")
-print("Completed Habits:")
-
-for h in completed:
-    print("-", h)
-
 total = len(habits)
 done = len(completed)
 
-print("\nProgress:", (done / total) * 100, "%")
+print("\n=== Summary ===")
+print("Completed:", done, "/", total)
+
+# 🔥 Streak logic
+if done == total:
+    print("🔥 Perfect Day! All habits completed!")
+elif done > 0:
+    print("💪 Good progress! Keep going!")
+else:
+    print("⚠ No habits completed today")
+
+# Percentage
+progress = (done / total) * 100
+print("Progress:", round(progress, 2), "%")
