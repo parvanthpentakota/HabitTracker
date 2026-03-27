@@ -1,13 +1,13 @@
 from datetime import date
 
-# Show today's date
+# File to store completed habits
+FILE_NAME = "habits.txt"
+
 today = date.today()
 print("=== Habit Tracker ===")
 print("Date:", today)
 
-# Habit list
 habits = ["Exercise", "Read", "Coding"]
-
 completed = []
 
 print("\nToday's Habits:")
@@ -39,21 +39,16 @@ while True:
     except ValueError:
         print("Enter a valid number ❌")
 
+# Save to file
+with open(FILE_NAME, "a") as file:
+    for habit in completed:
+        file.write(f"{today} - {habit}\n")
+
 # Summary
-total = len(habits)
-done = len(completed)
-
 print("\n=== Summary ===")
-print("Completed:", done, "/", total)
+print("Completed Habits:")
 
-# 🔥 Streak logic
-if done == total:
-    print("🔥 Perfect Day! All habits completed!")
-elif done > 0:
-    print("💪 Good progress! Keep going!")
-else:
-    print("⚠ No habits completed today")
+for h in completed:
+    print("-", h)
 
-# Percentage
-progress = (done / total) * 100
-print("Progress:", round(progress, 2), "%")
+print("\nSaved to file:", FILE_NAME)
