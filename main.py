@@ -1,6 +1,5 @@
 from datetime import date
 
-# File to store completed habits
 FILE_NAME = "habits.txt"
 
 today = date.today()
@@ -10,6 +9,19 @@ print("Date:", today)
 habits = ["Exercise", "Read", "Coding"]
 completed = []
 
+# 🔥 NEW: Show previous history
+print("\n=== Previous History ===")
+try:
+    with open(FILE_NAME, "r") as file:
+        data = file.readlines()
+        if data:
+            for line in data[-5:]:  # show last 5 entries
+                print(line.strip())
+        else:
+            print("No history found")
+except FileNotFoundError:
+    print("No history file yet")
+
 print("\nToday's Habits:")
 for i, habit in enumerate(habits, start=1):
     print(f"{i}. {habit}")
@@ -17,7 +29,6 @@ for i, habit in enumerate(habits, start=1):
 print("\nEnter habit number to mark as completed")
 print("Enter 0 to finish")
 
-# Input loop
 while True:
     try:
         choice = int(input("Choice: "))
@@ -46,9 +57,6 @@ with open(FILE_NAME, "a") as file:
 
 # Summary
 print("\n=== Summary ===")
-print("Completed Habits:")
+print("Completed:", len(completed), "/", len(habits))
 
-for h in completed:
-    print("-", h)
-
-print("\nSaved to file:", FILE_NAME)
+print("\nSaved successfully ✅")
