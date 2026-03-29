@@ -2,26 +2,30 @@ from datetime import date
 
 FILE_NAME = "habits.txt"
 
-today = date.today()
-print("=== Habit Tracker ===")
-print("Date:", today)
-
+today = str(date.today())
 habits = ["Exercise", "Read", "Coding"]
 completed = []
 
-# 🔥 NEW: Show previous history
-print("\n=== Previous History ===")
+print("=== Habit Tracker ===")
+print("Date:", today)
+
+# 🔥 Load previous data
+history = []
 try:
     with open(FILE_NAME, "r") as file:
-        data = file.readlines()
-        if data:
-            for line in data[-5:]:  # show last 5 entries
-                print(line.strip())
-        else:
-            print("No history found")
+        history = file.readlines()
 except FileNotFoundError:
-    print("No history file yet")
+    pass
 
+# 🔥 Calculate streak (simple logic: count today's entries)
+streak = 0
+for line in history:
+    if today in line:
+        streak += 1
+
+print(f"\n🔥 Current Streak Today: {streak}")
+
+# Show habits
 print("\nToday's Habits:")
 for i, habit in enumerate(habits, start=1):
     print(f"{i}. {habit}")
@@ -55,8 +59,7 @@ with open(FILE_NAME, "a") as file:
     for habit in completed:
         file.write(f"{today} - {habit}\n")
 
-# Summary
+# Final streak update
 print("\n=== Summary ===")
 print("Completed:", len(completed), "/", len(habits))
-
-print("\nSaved successfully ✅")
+print("🔥 Updated Streak Today:", streak + len(completed))
