@@ -8,7 +8,8 @@ today = date.today()
 def show_habits():
     print("\n=== Habits ===")
     for i, h in enumerate(habits, start=1):
-        print(f"{i}. {h}")
+        status = "✅" if h in completed else "❌"
+        print(f"{i}. {h} {status}")
 
 def mark_completed():
     show_habits()
@@ -16,33 +17,39 @@ def mark_completed():
         choice = int(input("Enter habit number: "))
         if 1 <= choice <= len(habits):
             habit = habits[choice - 1]
-            if habit not in completed:
-                completed.append(habit)
-                print("Marked as completed ✅")
-            else:
-                print("Already completed ⚠")
+            completed.add(habit) if isinstance(completed, set) else completed.append(habit)
+            print("Marked as completed ✅")
         else:
             print("Invalid choice ❌")
     except:
         print("Enter valid number ❌")
 
-def add_habit():
-    new_habit = input("Enter new habit: ")
-    habits.append(new_habit)
-    print("Habit added ✅")
+def undo_habit():
+    show_habits()
+    try:
+        choice = int(input("Enter habit number to undo: "))
+        if 1 <= choice <= len(habits):
+            habit = habits[choice - 1]
+            if habit in completed:
+                completed.remove(habit)
+                print("Habit undone 🔄")
+            else:
+                print("Habit not completed yet ⚠")
+        else:
+            print("Invalid choice ❌")
+    except:
+        print("Enter valid number ❌")
 
-def show_summary():
+def summary():
     print("\n=== Summary ===")
     print("Completed:", len(completed), "/", len(habits))
-    for h in completed:
-        print("-", h)
 
 while True:
-    print("\n=== Habit Tracker Menu ===")
+    print("\n=== Habit Tracker ===")
     print("1. View Habits")
     print("2. Mark Completed")
-    print("3. Add Habit")
-    print("4. Show Summary")
+    print("3. Undo Habit")
+    print("4. Summary")
     print("0. Exit")
 
     choice = input("Choose option: ")
@@ -52,9 +59,9 @@ while True:
     elif choice == "2":
         mark_completed()
     elif choice == "3":
-        add_habit()
+        undo_habit()
     elif choice == "4":
-        show_summary()
+        summary()
     elif choice == "0":
         print("Goodbye 👋")
         break
