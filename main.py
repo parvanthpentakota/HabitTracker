@@ -1,69 +1,61 @@
 from datetime import date
 
+FILE_NAME = "daily_summary.txt"
+
+today = str(date.today())
+
 habits = ["Exercise", "Read", "Coding"]
-completed = []
+completed = set()
 
-today = date.today()
+print("=== Habit Tracker ===")
+print("Date:", today)
 
-def show_habits():
-    print("\n=== Habits ===")
-    for i, h in enumerate(habits, start=1):
-        status = "✅" if h in completed else "❌"
-        print(f"{i}. {h} {status}")
+# 🔥 Load today's previous progress
+try:
+    with open(FILE_NAME, "r") as file:
+        for line in file:
+            saved_date, habit = line.strip().split(" - ")
+            if saved_date == today:
+                completed.add(habit)
+except FileNotFoundError:
+    pass
 
-def mark_completed():
-    show_habits()
-    try:
-        choice = int(input("Enter habit number: "))
-        if 1 <= choice <= len(habits):
-            habit = habits[choice - 1]
-            completed.add(habit) if isinstance(completed, set) else completed.append(habit)
-            print("Marked as completed ✅")
-        else:
-            print("Invalid choice ❌")
-    except:
-        print("Enter valid number ❌")
+print("\nLoaded Progress:", list(completed))
 
-def undo_habit():
-    show_habits()
-    try:
-        choice = int(input("Enter habit number to undo: "))
-        if 1 <= choice <= len(habits):
-            habit = habits[choice - 1]
-            if habit in completed:
-                completed.remove(habit)
-                print("Habit undone 🔄")
-            else:
-                print("Habit not completed yet ⚠")
-        else:
-            print("Invalid choice ❌")
-    except:
-        print("Enter valid number ❌")
+# Show habits
+for i, habit in enumerate(habits, start=1):
+    status = "✅" if habit in completed else "❌"
+    print(f"{i}. {habit} {status}")
 
-def summary():
-    print("\n=== Summary ===")
-    print("Completed:", len(completed), "/", len(habits))
+print("\nEnter habit number to mark as completed")
+print("Enter 0 to finish")
 
 while True:
-    print("\n=== Habit Tracker ===")
-    print("1. View Habits")
-    print("2. Mark Completed")
-    print("3. Undo Habit")
-    print("4. Summary")
-    print("0. Exit")
+    try:
+        choice = int(input("Choice: "))
 
-    choice = input("Choose option: ")
+        if choice == 0:
+            break
 
-    if choice == "1":
-        show_habits()
-    elif choice == "2":
-        mark_completed()
-    elif choice == "3":
-        undo_habit()
-    elif choice == "4":
-        summary()
-    elif choice == "0":
-        print("Goodbye 👋")
-        break
-    else:
-        print("Invalid option ❌")
+        if 1 <= choice <= len(habits):
+            habit = habits[choice - 1]
+
+            if habit not in completed:
+                completed.add(habit)
+                print(f"{habit} completed ✅")
+            else:
+                print("Already done ⚠")
+        else:
+            print("Invalid choice ❌")
+
+    except ValueError:
+        print("Enter a valid number ❌")
+
+# 🔥 Save updated progress
+with open(FILE_NAME, "a") as file:
+    for habit in completed:
+        file.write(f"{today} - {habit}\n")
+
+# Summary
+print("\n=== Summary ===")
+print("Completed:", len(completed), "/", len(habits))
