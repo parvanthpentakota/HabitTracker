@@ -1,61 +1,35 @@
 from datetime import date
 
-FILE_NAME = "daily_summary.txt"
+FILE_NAME = "habits.txt"
 
-today = str(date.today())
+print("=== Weekly Habit Report ===")
 
-habits = ["Exercise", "Read", "Coding"]
-completed = set()
+weekly_data = {}
 
-print("=== Habit Tracker ===")
-print("Date:", today)
-
-# 🔥 Load today's previous progress
+# Read file
 try:
     with open(FILE_NAME, "r") as file:
         for line in file:
-            saved_date, habit = line.strip().split(" - ")
-            if saved_date == today:
-                completed.add(habit)
+            d, habit = line.strip().split(" - ")
+
+            if d not in weekly_data:
+                weekly_data[d] = []
+
+            weekly_data[d].append(habit)
+
 except FileNotFoundError:
-    pass
+    print("No data available yet")
+    exit()
 
-print("\nLoaded Progress:", list(completed))
+# Display report
+total = 0
 
-# Show habits
-for i, habit in enumerate(habits, start=1):
-    status = "✅" if habit in completed else "❌"
-    print(f"{i}. {habit} {status}")
+print("\n=== Weekly Summary ===")
 
-print("\nEnter habit number to mark as completed")
-print("Enter 0 to finish")
+for day in weekly_data:
+    count = len(weekly_data[day])
+    total += count
 
-while True:
-    try:
-        choice = int(input("Choice: "))
+    print(f"{day}: {count} habits completed")
 
-        if choice == 0:
-            break
-
-        if 1 <= choice <= len(habits):
-            habit = habits[choice - 1]
-
-            if habit not in completed:
-                completed.add(habit)
-                print(f"{habit} completed ✅")
-            else:
-                print("Already done ⚠")
-        else:
-            print("Invalid choice ❌")
-
-    except ValueError:
-        print("Enter a valid number ❌")
-
-# 🔥 Save updated progress
-with open(FILE_NAME, "a") as file:
-    for habit in completed:
-        file.write(f"{today} - {habit}\n")
-
-# Summary
-print("\n=== Summary ===")
-print("Completed:", len(completed), "/", len(habits))
+print("\nTotal Habits Completed This Week:", total)
