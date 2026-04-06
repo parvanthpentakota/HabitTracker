@@ -1,35 +1,57 @@
 from datetime import date
 
-FILE_NAME = "habits.txt"
+habits = ["Exercise", "Read", "Coding"]
+completed = []
 
-print("=== Weekly Habit Report ===")
+today = date.today()
 
-weekly_data = {}
+print("=== Habit Tracker ===")
+print("Date:", today)
 
-# Read file
-try:
-    with open(FILE_NAME, "r") as file:
-        for line in file:
-            d, habit = line.strip().split(" - ")
+# Show habits
+for i, habit in enumerate(habits, start=1):
+    print(f"{i}. {habit}")
 
-            if d not in weekly_data:
-                weekly_data[d] = []
+print("\nEnter habit number to mark as completed")
+print("Enter 0 to finish")
 
-            weekly_data[d].append(habit)
+while True:
+    try:
+        choice = int(input("Choice: "))
 
-except FileNotFoundError:
-    print("No data available yet")
-    exit()
+        if choice == 0:
+            break
 
-# Display report
-total = 0
+        if 1 <= choice <= len(habits):
+            habit = habits[choice - 1]
 
-print("\n=== Weekly Summary ===")
+            if habit not in completed:
+                completed.append(habit)
+                print(f"{habit} completed ✅")
+            else:
+                print("Already done ⚠")
+        else:
+            print("Invalid choice ❌")
 
-for day in weekly_data:
-    count = len(weekly_data[day])
-    total += count
+    except ValueError:
+        print("Enter valid number ❌")
 
-    print(f"{day}: {count} habits completed")
+# 🔥 Percentage Calculation
+total = len(habits)
+done = len(completed)
 
-print("\nTotal Habits Completed This Week:", total)
+percentage = (done / total) * 100
+
+print("\n=== Daily Progress ===")
+print(f"Completed: {done}/{total}")
+print(f"Progress: {round(percentage, 2)}%")
+
+# 🔥 Feedback
+if percentage == 100:
+    print("🔥 Perfect Day!")
+elif percentage >= 70:
+    print("💪 Great job!")
+elif percentage > 0:
+    print("👍 Keep improving!")
+else:
+    print("⚠ Try to complete at least one habit!")
