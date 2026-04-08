@@ -5,53 +5,57 @@ completed = []
 
 today = date.today()
 
-print("=== Habit Tracker ===")
-print("Date:", today)
+def show_habits():
+    print("\n=== Habits ===")
+    for i, h in enumerate(habits, start=1):
+        status = "✅" if h in completed else "❌"
+        print(f"{i}. {h} {status}")
 
-# Show habits
-for i, habit in enumerate(habits, start=1):
-    print(f"{i}. {habit}")
-
-print("\nEnter habit number to mark as completed")
-print("Enter 0 to finish")
-
-while True:
+def mark_completed():
     try:
-        choice = int(input("Choice: "))
-
-        if choice == 0:
-            break
-
+        choice = int(input("Enter habit number: "))
         if 1 <= choice <= len(habits):
             habit = habits[choice - 1]
-
             if habit not in completed:
                 completed.append(habit)
-                print(f"{habit} completed ✅")
+                print("Marked as completed ✅")
             else:
-                print("Already done ⚠")
+                print("Already completed ⚠")
         else:
             print("Invalid choice ❌")
-
-    except ValueError:
+    except:
         print("Enter valid number ❌")
 
-# 🔥 Percentage Calculation
-total = len(habits)
-done = len(completed)
+# 🔥 NEW: Reset feature
+def reset_day():
+    completed.clear()
+    print("Today's progress has been reset 🔄")
 
-percentage = (done / total) * 100
+def summary():
+    print("\n=== Summary ===")
+    print("Completed:", len(completed), "/", len(habits))
 
-print("\n=== Daily Progress ===")
-print(f"Completed: {done}/{total}")
-print(f"Progress: {round(percentage, 2)}%")
+while True:
+    print("\n=== Habit Tracker ===")
+    print("1. View Habits")
+    print("2. Mark Completed")
+    print("3. Reset Day 🔄")
+    print("4. Summary")
+    print("0. Exit")
 
-# 🔥 Feedback
-if percentage == 100:
-    print("🔥 Perfect Day!")
-elif percentage >= 70:
-    print("💪 Great job!")
-elif percentage > 0:
-    print("👍 Keep improving!")
-else:
-    print("⚠ Try to complete at least one habit!")
+    choice = input("Choose option: ")
+
+    if choice == "1":
+        show_habits()
+    elif choice == "2":
+        show_habits()
+        mark_completed()
+    elif choice == "3":
+        reset_day()
+    elif choice == "4":
+        summary()
+    elif choice == "0":
+        print("Goodbye 👋")
+        break
+    else:
+        print("Invalid option ❌")
