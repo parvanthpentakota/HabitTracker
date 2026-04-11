@@ -1,20 +1,12 @@
-from datetime import date
-
 habits = ["Exercise", "Read", "Coding"]
 completed = []
 
-today = date.today()
-
-def search_habit():
-    name = input("Enter habit to search: ")
-
-    if name in habits:
-        if name in completed:
-            print(f"{name} exists and is completed ✅")
-        else:
-            print(f"{name} exists but not completed ❌")
-    else:
-        print("Habit not found ⚠")
+def show_sorted_habits():
+    sorted_list = sorted(habits)
+    print("\n=== Sorted Habits ===")
+    for h in sorted_list:
+        status = "✅" if h in completed else "❌"
+        print(f"{h} {status}")
 
 def mark_completed():
     for i, h in enumerate(habits, start=1):
@@ -37,7 +29,7 @@ def mark_completed():
 while True:
     print("\n=== Habit Tracker ===")
     print("1. Mark Completed")
-    print("2. Search Habit 🔍")
+    print("2. View Sorted Habits 🔤")
     print("0. Exit")
 
     choice = input("Choose option: ")
@@ -45,7 +37,7 @@ while True:
     if choice == "1":
         mark_completed()
     elif choice == "2":
-        search_habit()
+        show_sorted_habits()
     elif choice == "0":
         print("Goodbye 👋")
         break
