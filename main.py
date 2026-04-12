@@ -1,14 +1,19 @@
 habits = ["Exercise", "Read", "Coding"]
 completed = []
 
-def show_sorted_habits():
-    sorted_list = sorted(habits)
-    print("\n=== Sorted Habits ===")
-    for h in sorted_list:
+def mark_all_completed():
+    for h in habits:
+        if h not in completed:
+            completed.append(h)
+    print("All habits marked as completed ✅")
+
+def show_status():
+    print("\n=== Habit Status ===")
+    for h in habits:
         status = "✅" if h in completed else "❌"
         print(f"{h} {status}")
 
-def mark_completed():
+def mark_single():
     for i, h in enumerate(habits, start=1):
         print(f"{i}. {h}")
 
@@ -28,16 +33,19 @@ def mark_completed():
 
 while True:
     print("\n=== Habit Tracker ===")
-    print("1. Mark Completed")
-    print("2. View Sorted Habits 🔤")
+    print("1. Mark One Habit")
+    print("2. Mark All Habits ⚡")
+    print("3. Show Status")
     print("0. Exit")
 
     choice = input("Choose option: ")
 
     if choice == "1":
-        mark_completed()
+        mark_single()
     elif choice == "2":
-        show_sorted_habits()
+        mark_all_completed()
+    elif choice == "3":
+        show_status()
     elif choice == "0":
         print("Goodbye 👋")
         break
