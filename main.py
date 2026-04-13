@@ -1,22 +1,31 @@
 habits = ["Exercise", "Read", "Coding"]
 completed = []
 
-def mark_all_completed():
-    for h in habits:
-        if h not in completed:
-            completed.append(h)
-    print("All habits marked as completed ✅")
-
-def show_status():
-    print("\n=== Habit Status ===")
-    for h in habits:
-        status = "✅" if h in completed else "❌"
-        print(f"{h} {status}")
-
-def mark_single():
+def show_habits():
+    print("\n=== Habits ===")
     for i, h in enumerate(habits, start=1):
-        print(f"{i}. {h}")
+        status = "✅" if h in completed else "❌"
+        print(f"{i}. {h} {status}")
 
+def remove_habit():
+    show_habits()
+    try:
+        choice = int(input("Enter habit number to remove: "))
+        if 1 <= choice <= len(habits):
+            habit = habits.pop(choice - 1)
+
+            # Also remove from completed if present
+            if habit in completed:
+                completed.remove(habit)
+
+            print(f"{habit} removed 🗑️")
+        else:
+            print("Invalid choice ❌")
+    except:
+        print("Enter valid number ❌")
+
+def mark_completed():
+    show_habits()
     try:
         choice = int(input("Enter habit number: "))
         if 1 <= choice <= len(habits):
@@ -33,19 +42,19 @@ def mark_single():
 
 while True:
     print("\n=== Habit Tracker ===")
-    print("1. Mark One Habit")
-    print("2. Mark All Habits ⚡")
-    print("3. Show Status")
+    print("1. View Habits")
+    print("2. Mark Completed")
+    print("3. Remove Habit 🗑️")
     print("0. Exit")
 
     choice = input("Choose option: ")
 
     if choice == "1":
-        mark_single()
+        show_habits()
     elif choice == "2":
-        mark_all_completed()
+        mark_completed()
     elif choice == "3":
-        show_status()
+        remove_habit()
     elif choice == "0":
         print("Goodbye 👋")
         break
