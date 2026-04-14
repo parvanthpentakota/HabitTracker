@@ -7,18 +7,22 @@ def show_habits():
         status = "✅" if h in completed else "❌"
         print(f"{i}. {h} {status}")
 
-def remove_habit():
+def edit_habit():
     show_habits()
     try:
-        choice = int(input("Enter habit number to remove: "))
+        choice = int(input("Enter habit number to edit: "))
         if 1 <= choice <= len(habits):
-            habit = habits.pop(choice - 1)
+            old_habit = habits[choice - 1]
+            new_name = input("Enter new habit name: ")
 
-            # Also remove from completed if present
-            if habit in completed:
-                completed.remove(habit)
+            habits[choice - 1] = new_name
 
-            print(f"{habit} removed 🗑️")
+            # Update completed list if needed
+            if old_habit in completed:
+                completed.remove(old_habit)
+                completed.append(new_name)
+
+            print("Habit updated ✏️")
         else:
             print("Invalid choice ❌")
     except:
@@ -44,7 +48,7 @@ while True:
     print("\n=== Habit Tracker ===")
     print("1. View Habits")
     print("2. Mark Completed")
-    print("3. Remove Habit 🗑️")
+    print("3. Edit Habit ✏️")
     print("0. Exit")
 
     choice = input("Choose option: ")
@@ -54,7 +58,7 @@ while True:
     elif choice == "2":
         mark_completed()
     elif choice == "3":
-        remove_habit()
+        edit_habit()
     elif choice == "0":
         print("Goodbye 👋")
         break
