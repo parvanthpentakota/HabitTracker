@@ -1,56 +1,61 @@
-from datetime import datetime
+class Habit:
+    def __init__(self, name):
+        self.name = name
+        self.progress = 0
 
-habits = ["Exercise", "Read", "Coding"]
-completed = {}  # habit -> time
+    def mark_done(self):
+        self.progress += 1
 
-def show_habits():
-    print("\n=== Habits ===")
-    for i, h in enumerate(habits, start=1):
-        if h in completed:
-            print(f"{i}. {h} ✅ at {completed[h]}")
+    def __str__(self):
+        return f"{self.name} → Days Completed: {self.progress}"
+
+
+def display_habits(habits):
+    if not habits:
+        print("No habits found.")
+        return
+
+    print("\nYour Habits:")
+    for i, habit in enumerate(habits):
+        print(f"{i + 1}. {habit}")
+
+
+def main():
+    habits = []
+
+    while True:
+        print("\n=== Habit Tracker ===")
+        print("1. Add Habit")
+        print("2. Mark Habit as Done")
+        print("3. View Habits")
+        print("4. Exit")
+
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            name = input("Enter habit name: ")
+            habits.append(Habit(name))
+            print("Habit added!")
+
+        elif choice == "2":
+            display_habits(habits)
+            try:
+                index = int(input("Select habit number: ")) - 1
+                habits[index].mark_done()
+                print("Habit marked as done!")
+            except:
+                print("Invalid choice!")
+
+        elif choice == "3":
+            display_habits(habits)
+
+        elif choice == "4":
+            print("Exiting...")
+            break
+
         else:
-            print(f"{i}. {h} ❌")
+            print("Invalid option!")
 
-def mark_completed():
-    show_habits()
-    try:
-        choice = int(input("Enter habit number: "))
-        if 1 <= choice <= len(habits):
-            habit = habits[choice - 1]
 
-            if habit not in completed:
-                time_now = datetime.now().strftime("%H:%M:%S")
-                completed[habit] = time_now
-                print(f"{habit} completed at {time_now} ⏱️")
-            else:
-                print("Already completed ⚠")
-        else:
-            print("Invalid choice ❌")
-    except:
-        print("Enter valid number ❌")
-
-def show_summary():
-    print("\n=== Summary ===")
-    for h, t in completed.items():
-        print(f"{h} → completed at {t}")
-
-while True:
-    print("\n=== Habit Tracker ===")
-    print("1. View Habits")
-    print("2. Mark Completed ⏱️")
-    print("3. Show Summary")
-    print("0. Exit")
-
-    choice = input("Choose option: ")
-
-    if choice == "1":
-        show_habits()
-    elif choice == "2":
-        mark_completed()
-    elif choice == "3":
-        show_summary()
-    elif choice == "0":
-        print("Goodbye 👋")
-        break
-    else:
-        print("Invalid option ❌")
+if __name__ == "__main__":
+    main()
