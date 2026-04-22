@@ -20,6 +20,22 @@ def display_habits(habits):
         print(f"{i + 1}. {habit}")
 
 
+def add_habit(habits):
+    name = input("Enter habit name: ")
+    habits.append(Habit(name))
+    print("Habit added!")
+
+
+def mark_habit_done(habits):
+    display_habits(habits)
+    try:
+        index = int(input("Select habit number: ")) - 1
+        habits[index].mark_done()
+        print("Habit marked as done!")
+    except:
+        print("Invalid choice!")
+
+
 def main():
     habits = []
 
@@ -33,26 +49,14 @@ def main():
         choice = input("Enter choice: ")
 
         if choice == "1":
-            name = input("Enter habit name: ")
-            habits.append(Habit(name))
-            print("Habit added!")
-
+            add_habit(habits)
         elif choice == "2":
-            display_habits(habits)
-            try:
-                index = int(input("Select habit number: ")) - 1
-                habits[index].mark_done()
-                print("Habit marked as done!")
-            except:
-                print("Invalid choice!")
-
+            mark_habit_done(habits)
         elif choice == "3":
             display_habits(habits)
-
         elif choice == "4":
             print("Exiting...")
             break
-
         else:
             print("Invalid option!")
 
