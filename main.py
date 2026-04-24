@@ -21,29 +21,29 @@ def display_habits(habits):
 
 
 def add_habit(habits):
-    name = input("Enter habit name: ").strip()
-    if name:
-        habits.append(Habit(name))
-        print("Habit added successfully!")
-    else:
-        print("Habit name cannot be empty!")
+    name = input("Enter habit name: ")
+    habits.append(Habit(name))
+    print("Habit added!")
 
 
 def mark_habit_done(habits):
-    if not habits:
-        print("No habits to update.")
-        return
-
     display_habits(habits)
     try:
         index = int(input("Select habit number: ")) - 1
-        if 0 <= index < len(habits):
-            habits[index].mark_done()
-            print("Habit marked as done!")
-        else:
-            print("Invalid index!")
-    except ValueError:
-        print("Please enter a valid number!")
+        habits[index].mark_done()
+        print("Habit marked as done!")
+    except:
+        print("Invalid choice!")
+
+
+def delete_habit(habits):
+    display_habits(habits)
+    try:
+        index = int(input("Select habit to delete: ")) - 1
+        removed = habits.pop(index)
+        print(f"Deleted habit: {removed.name}")
+    except:
+        print("Invalid choice!")
 
 
 def main():
@@ -54,9 +54,10 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Exit")
+        print("4. Delete Habit")
+        print("5. Exit")
 
-        choice = input("Enter choice: ").strip()
+        choice = input("Enter choice: ")
 
         if choice == "1":
             add_habit(habits)
@@ -65,10 +66,12 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            print("Exiting Habit Tracker...")
+            delete_habit(habits)
+        elif choice == "5":
+            print("Exiting...")
             break
         else:
-            print("Invalid option! Please try again.")
+            print("Invalid option!")
 
 
 if __name__ == "__main__":
