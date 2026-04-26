@@ -69,12 +69,12 @@ def delete_habit(habits):
         print("Invalid choice!")
 
 
-# 🔥 NEW FEATURE
+# ✅ NEW FEATURE (TODAY)
 def edit_habit(habits):
     display_habits(habits)
     try:
         index = int(input("Select habit to edit: ")) - 1
-        new_name = input("Enter new name: ")
+        new_name = input("Enter new habit name: ")
         habits[index].name = new_name
         print("Habit updated!")
     except:
@@ -90,7 +90,7 @@ def main():
         print("2. Mark Habit as Done")
         print("3. View Habits")
         print("4. Delete Habit")
-        print("5. Edit Habit")   # NEW
+        print("5. Edit Habit")   # 👈 today’s feature
         print("6. Save & Exit")
 
         choice = input("Enter choice: ")
