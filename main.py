@@ -1,22 +1,31 @@
 import json
 
 class Habit:
-    def __init__(self, name, progress=0):
+    def __init__(self, name, progress=0, streak=0):
         self.name = name
         self.progress = progress
+        self.streak = streak
 
     def mark_done(self):
         self.progress += 1
+        self.streak += 1  # increase streak
+
+    def reset_streak(self):
+        self.streak = 0
 
     def to_dict(self):
-        return {"name": self.name, "progress": self.progress}
+        return {
+            "name": self.name,
+            "progress": self.progress,
+            "streak": self.streak
+        }
 
     @staticmethod
     def from_dict(data):
-        return Habit(data["name"], data["progress"])
+        return Habit(data["name"], data["progress"], data.get("streak", 0))
 
     def __str__(self):
-        return f"{self.name} → Days Completed: {self.progress}"
+        return f"{self.name} → Done: {self.progress} | Streak: {self.streak}"
 
 
 def save_habits(habits):
@@ -54,7 +63,17 @@ def mark_habit_done(habits):
     try:
         index = int(input("Select habit number: ")) - 1
         habits[index].mark_done()
-        print("Habit marked as done!")
+        print("Habit marked as done! 🔥 Streak increased!")
+    except:
+        print("Invalid choice!")
+
+
+def reset_streak(habits):
+    display_habits(habits)
+    try:
+        index = int(input("Select habit to reset streak: ")) - 1
+        habits[index].reset_streak()
+        print("Streak reset!")
     except:
         print("Invalid choice!")
 
@@ -69,18 +88,6 @@ def delete_habit(habits):
         print("Invalid choice!")
 
 
-# ✅ NEW FEATURE (TODAY)
-def edit_habit(habits):
-    display_habits(habits)
-    try:
-        index = int(input("Select habit to edit: ")) - 1
-        new_name = input("Enter new habit name: ")
-        habits[index].name = new_name
-        print("Habit updated!")
-    except:
-        print("Invalid choice!")
-
-
 def main():
     habits = load_habits()
 
@@ -90,7 +97,7 @@ def main():
         print("2. Mark Habit as Done")
         print("3. View Habits")
         print("4. Delete Habit")
-        print("5. Edit Habit")   # 👈 today’s feature
+        print("5. Reset Streak")
         print("6. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -104,7 +111,7 @@ def main():
         elif choice == "4":
             delete_habit(habits)
         elif choice == "5":
-            edit_habit(habits)
+            reset_streak(habits)
         elif choice == "6":
             save_habits(habits)
             print("Habits saved. Exiting...")
