@@ -1,31 +1,22 @@
 import json
 
 class Habit:
-    def __init__(self, name, progress=0, streak=0):
+    def __init__(self, name, progress=0):
         self.name = name
         self.progress = progress
-        self.streak = streak
 
     def mark_done(self):
         self.progress += 1
-        self.streak += 1  # increase streak
-
-    def reset_streak(self):
-        self.streak = 0
 
     def to_dict(self):
-        return {
-            "name": self.name,
-            "progress": self.progress,
-            "streak": self.streak
-        }
+        return {"name": self.name, "progress": self.progress}
 
     @staticmethod
     def from_dict(data):
-        return Habit(data["name"], data["progress"], data.get("streak", 0))
+        return Habit(data["name"], data["progress"])
 
     def __str__(self):
-        return f"{self.name} → Done: {self.progress} | Streak: {self.streak}"
+        return f"{self.name} → Days Completed: {self.progress}"
 
 
 def save_habits(habits):
@@ -52,6 +43,23 @@ def display_habits(habits):
         print(f"{i + 1}. {habit}")
 
 
+# 🔥 NEW FEATURE
+def show_summary(habits):
+    total = len(habits)
+    completed = sum(1 for h in habits if h.progress > 0)
+
+    if total == 0:
+        print("No habits to summarize.")
+        return
+
+    percentage = (completed / total) * 100
+    print(f"\nSummary:")
+    print(f"Total Habits: {total}")
+    print(f"Completed Habits: {completed}")
+    print(f"Completion: {percentage:.2f}%")
+
+
+
 def add_habit(habits):
     name = input("Enter habit name: ")
     habits.append(Habit(name))
@@ -63,27 +71,7 @@ def mark_habit_done(habits):
     try:
         index = int(input("Select habit number: ")) - 1
         habits[index].mark_done()
-        print("Habit marked as done! 🔥 Streak increased!")
-    except:
-        print("Invalid choice!")
-
-
-def reset_streak(habits):
-    display_habits(habits)
-    try:
-        index = int(input("Select habit to reset streak: ")) - 1
-        habits[index].reset_streak()
-        print("Streak reset!")
-    except:
-        print("Invalid choice!")
-
-
-def delete_habit(habits):
-    display_habits(habits)
-    try:
-        index = int(input("Select habit to delete: ")) - 1
-        removed = habits.pop(index)
-        print(f"Deleted habit: {removed.name}")
+        print("Habit marked as done!")
     except:
         print("Invalid choice!")
 
@@ -96,9 +84,8 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Delete Habit")
-        print("5. Reset Streak")
-        print("6. Save & Exit")
+        print("4. Show Summary")  # NEW
+        print("5. Save & Exit")
 
         choice = input("Enter choice: ")
 
@@ -109,10 +96,8 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            delete_habit(habits)
+            show_summary(habits)
         elif choice == "5":
-            reset_streak(habits)
-        elif choice == "6":
             save_habits(habits)
             print("Habits saved. Exiting...")
             break
@@ -122,8 +107,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
