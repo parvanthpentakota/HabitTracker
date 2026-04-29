@@ -1,22 +1,37 @@
 import json
 
 class Habit:
-    def __init__(self, name, progress=0):
+    def __init__(self, name, progress=0, done_today=False):
         self.name = name
         self.progress = progress
+        self.done_today = done_today
 
     def mark_done(self):
-        self.progress += 1
+        if not self.done_today:
+            self.progress += 1
+            self.done_today = True
+
+    def reset_today(self):
+        self.done_today = False
 
     def to_dict(self):
-        return {"name": self.name, "progress": self.progress}
+        return {
+            "name": self.name,
+            "progress": self.progress,
+            "done_today": self.done_today
+        }
 
     @staticmethod
     def from_dict(data):
-        return Habit(data["name"], data["progress"])
+        return Habit(
+            data["name"],
+            data["progress"],
+            data.get("done_today", False)
+        )
 
     def __str__(self):
-        return f"{self.name} → Days Completed: {self.progress}"
+        status = "✅ Done Today" if self.done_today else "❌ Not Done"
+        return f"{self.name} → Total: {self.progress} | {status}"
 
 
 def save_habits(habits):
@@ -43,23 +58,6 @@ def display_habits(habits):
         print(f"{i + 1}. {habit}")
 
 
-# 🔥 NEW FEATURE
-def show_summary(habits):
-    total = len(habits)
-    completed = sum(1 for h in habits if h.progress > 0)
-
-    if total == 0:
-        print("No habits to summarize.")
-        return
-
-    percentage = (completed / total) * 100
-    print(f"\nSummary:")
-    print(f"Total Habits: {total}")
-    print(f"Completed Habits: {completed}")
-    print(f"Completion: {percentage:.2f}%")
-
-
-
 def add_habit(habits):
     name = input("Enter habit name: ")
     habits.append(Habit(name))
@@ -71,9 +69,16 @@ def mark_habit_done(habits):
     try:
         index = int(input("Select habit number: ")) - 1
         habits[index].mark_done()
-        print("Habit marked as done!")
+        print("Marked as done for today!")
     except:
         print("Invalid choice!")
+
+
+# 🔥 NEW FEATURE
+def reset_daily_status(habits):
+    for h in habits:
+        h.reset_today()
+    print("Daily status reset for all habits!")
 
 
 def main():
@@ -82,9 +87,9 @@ def main():
     while True:
         print("\n=== Habit Tracker ===")
         print("1. Add Habit")
-        print("2. Mark Habit as Done")
+        print("2. Mark Habit as Done Today")
         print("3. View Habits")
-        print("4. Show Summary")  # NEW
+        print("4. Reset Daily Status")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -96,10 +101,10 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            show_summary(habits)
+            reset_daily_status(habits)
         elif choice == "5":
             save_habits(habits)
-            print("Habits saved. Exiting...")
+            print("Saved. Exiting...")
             break
         else:
             print("Invalid option!")
