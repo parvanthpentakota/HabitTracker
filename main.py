@@ -1,37 +1,22 @@
 import json
 
 class Habit:
-    def __init__(self, name, progress=0, done_today=False):
+    def __init__(self, name, progress=0):
         self.name = name
         self.progress = progress
-        self.done_today = done_today
 
     def mark_done(self):
-        if not self.done_today:
-            self.progress += 1
-            self.done_today = True
-
-    def reset_today(self):
-        self.done_today = False
+        self.progress += 1
 
     def to_dict(self):
-        return {
-            "name": self.name,
-            "progress": self.progress,
-            "done_today": self.done_today
-        }
+        return {"name": self.name, "progress": self.progress}
 
     @staticmethod
     def from_dict(data):
-        return Habit(
-            data["name"],
-            data["progress"],
-            data.get("done_today", False)
-        )
+        return Habit(data["name"], data["progress"])
 
     def __str__(self):
-        status = "✅ Done Today" if self.done_today else "❌ Not Done"
-        return f"{self.name} → Total: {self.progress} | {status}"
+        return f"{self.name} → Days Completed: {self.progress}"
 
 
 def save_habits(habits):
@@ -69,16 +54,22 @@ def mark_habit_done(habits):
     try:
         index = int(input("Select habit number: ")) - 1
         habits[index].mark_done()
-        print("Marked as done for today!")
+        print("Habit marked as done!")
     except:
         print("Invalid choice!")
 
 
 # 🔥 NEW FEATURE
-def reset_daily_status(habits):
-    for h in habits:
-        h.reset_today()
-    print("Daily status reset for all habits!")
+def sort_habits_by_progress(habits):
+    if not habits:
+        print("No habits to sort.")
+        return
+
+    sorted_habits = sorted(habits, key=lambda h: h.progress, reverse=True)
+
+    print("\nHabits Sorted by Progress:")
+    for habit in sorted_habits:
+        print(habit)
 
 
 def main():
@@ -87,9 +78,9 @@ def main():
     while True:
         print("\n=== Habit Tracker ===")
         print("1. Add Habit")
-        print("2. Mark Habit as Done Today")
+        print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Reset Daily Status")  # NEW
+        print("4. Sort by Progress")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -101,7 +92,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            reset_daily_status(habits)
+            sort_habits_by_progress(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
