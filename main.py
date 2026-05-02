@@ -60,16 +60,17 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def sort_habits_by_progress(habits):
-    if not habits:
-        print("No habits to sort.")
-        return
+def search_habit(habits):
+    keyword = input("Enter habit name to search: ").lower()
 
-    sorted_habits = sorted(habits, key=lambda h: h.progress, reverse=True)
+    found = False
+    for habit in habits:
+        if keyword in habit.name.lower():
+            print("Found:", habit)
+            found = True
 
-    print("\nHabits Sorted by Progress:")
-    for habit in sorted_habits:
-        print(habit)
+    if not found:
+        print("No matching habit found.")
 
 
 def main():
@@ -80,7 +81,7 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Sort by Progress")  # NEW
+        print("4. Search Habit")   # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -92,7 +93,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            sort_habits_by_progress(habits)
+            search_habit(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
