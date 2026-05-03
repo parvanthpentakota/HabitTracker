@@ -60,17 +60,28 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def search_habit(habits):
-    keyword = input("Enter habit name to search: ").lower()
+def filter_habits(habits):
+    print("\n1. Completed Habits")
+    print("2. Pending Habits")
 
-    found = False
-    for habit in habits:
-        if keyword in habit.name.lower():
-            print("Found:", habit)
-            found = True
+    choice = input("Choose filter: ")
 
-    if not found:
-        print("No matching habit found.")
+    if choice == "1":
+        filtered = [h for h in habits if h.progress > 0]
+        print("\nCompleted Habits:")
+    elif choice == "2":
+        filtered = [h for h in habits if h.progress == 0]
+        print("\nPending Habits:")
+    else:
+        print("Invalid choice!")
+        return
+
+    if not filtered:
+        print("No habits found.")
+        return
+
+    for habit in filtered:
+        print(habit)
 
 
 def main():
@@ -81,7 +92,7 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Search Habit")   # NEW
+        print("4. Filter Habits")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -93,7 +104,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            search_habit(habits)
+            filter_habits(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
