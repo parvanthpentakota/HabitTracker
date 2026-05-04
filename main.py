@@ -60,27 +60,15 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def filter_habits(habits):
-    print("\n1. Completed Habits")
-    print("2. Pending Habits")
-
-    choice = input("Choose filter: ")
-
-    if choice == "1":
-        filtered = [h for h in habits if h.progress > 0]
-        print("\nCompleted Habits:")
-    elif choice == "2":
-        filtered = [h for h in habits if h.progress == 0]
-        print("\nPending Habits:")
-    else:
-        print("Invalid choice!")
+def sort_habits_by_progress(habits):
+    if not habits:
+        print("No habits to sort.")
         return
 
-    if not filtered:
-        print("No habits found.")
-        return
+    sorted_habits = sorted(habits, key=lambda h: h.progress, reverse=True)
 
-    for habit in filtered:
+    print("\nHabits Sorted by Progress:")
+    for habit in sorted_habits:
         print(habit)
 
 
@@ -92,7 +80,7 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Filter Habits")  # NEW
+        print("4. Sort by Progress")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -104,7 +92,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            filter_habits(habits)
+            sort_habits_by_progress(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
