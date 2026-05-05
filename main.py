@@ -60,16 +60,16 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def sort_habits_by_progress(habits):
-    if not habits:
-        print("No habits to sort.")
+def show_reminders(habits):
+    print("\n🔔 Habit Reminders:")
+    pending = [h for h in habits if h.progress == 0]
+
+    if not pending:
+        print("Great job! All habits have been started 🎉")
         return
 
-    sorted_habits = sorted(habits, key=lambda h: h.progress, reverse=True)
-
-    print("\nHabits Sorted by Progress:")
-    for habit in sorted_habits:
-        print(habit)
+    for habit in pending:
+        print(f"⚠️ You haven't started: {habit.name}")
 
 
 def main():
@@ -80,7 +80,7 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Sort by Progress")  # NEW
+        print("4. Show Reminders")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -92,7 +92,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            sort_habits_by_progress(habits)
+            show_reminders(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
