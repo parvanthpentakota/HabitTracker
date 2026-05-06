@@ -1,4 +1,5 @@
 import json
+import random
 
 class Habit:
     def __init__(self, name, progress=0):
@@ -61,15 +62,22 @@ def mark_habit_done(habits):
 
 # 🔥 NEW FEATURE
 def show_reminders(habits):
-    print("\n🔔 Habit Reminders:")
+    messages = [
+        "Stay consistent! 💪",
+        "You’ve got this! 🚀",
+        "Small steps every day!",
+        "Discipline beats motivation!"
+    ]
+
     pending = [h for h in habits if h.progress == 0]
 
     if not pending:
-        print("Great job! All habits have been started 🎉")
+        print("Great job! All habits are progressing 🎉")
         return
 
+    print("\n🔔 Reminders:")
     for habit in pending:
-        print(f"⚠️ You haven't started: {habit.name}")
+        print(f"- {habit.name}: {random.choice(messages)}")
 
 
 def main():
