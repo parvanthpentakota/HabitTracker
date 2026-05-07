@@ -1,5 +1,4 @@
 import json
-import random
 
 class Habit:
     def __init__(self, name, progress=0):
@@ -52,6 +51,7 @@ def add_habit(habits):
 
 def mark_habit_done(habits):
     display_habits(habits)
+
     try:
         index = int(input("Select habit number: ")) - 1
         habits[index].mark_done()
@@ -61,23 +61,20 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def show_reminders(habits):
-    messages = [
-        "Stay consistent! 💪",
-        "You’ve got this! 🚀",
-        "Small steps every day!",
-        "Discipline beats motivation!"
-    ]
-
-    pending = [h for h in habits if h.progress == 0]
-
-    if not pending:
-        print("Great job! All habits are progressing 🎉")
+def show_statistics(habits):
+    if not habits:
+        print("No habits available.")
         return
 
-    print("\n🔔 Reminders:")
-    for habit in pending:
-        print(f"- {habit.name}: {random.choice(messages)}")
+    total_habits = len(habits)
+    total_progress = sum(h.progress for h in habits)
+
+    most_active = max(habits, key=lambda h: h.progress)
+
+    print("\n=== Habit Statistics ===")
+    print(f"Total Habits: {total_habits}")
+    print(f"Total Completed Actions: {total_progress}")
+    print(f"Most Active Habit: {most_active.name} ({most_active.progress} completions)")
 
 
 def main():
@@ -88,7 +85,7 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Show Reminders")  # NEW
+        print("4. Show Statistics")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -100,7 +97,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            show_reminders(habits)
+            show_statistics(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
@@ -111,3 +108,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
