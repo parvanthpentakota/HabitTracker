@@ -1,19 +1,31 @@
 import json
+from datetime import datetime
 
 class Habit:
-    def __init__(self, name, progress=0):
+    def __init__(self, name, progress=0, history=None):
         self.name = name
         self.progress = progress
+        self.history = history if history else []
 
     def mark_done(self):
         self.progress += 1
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.history.append(timestamp)
 
     def to_dict(self):
-        return {"name": self.name, "progress": self.progress}
+        return {
+            "name": self.name,
+            "progress": self.progress,
+            "history": self.history
+        }
 
     @staticmethod
     def from_dict(data):
-        return Habit(data["name"], data["progress"])
+        return Habit(
+            data["name"],
+            data["progress"],
+            data.get("history", [])
+        )
 
     def __str__(self):
         return f"{self.name} → Days Completed: {self.progress}"
@@ -61,20 +73,24 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def show_statistics(habits):
-    if not habits:
-        print("No habits available.")
-        return
+def show_history(habits):
+    display_habits(habits)
 
-    total_habits = len(habits)
-    total_progress = sum(h.progress for h in habits)
+    try:
+        index = int(input("Select habit number to view history: ")) - 1
+        habit = habits[index]
 
-    most_active = max(habits, key=lambda h: h.progress)
+        print(f"\nCompletion History for {habit.name}:")
 
-    print("\n=== Habit Statistics ===")
-    print(f"Total Habits: {total_habits}")
-    print(f"Total Completed Actions: {total_progress}")
-    print(f"Most Active Habit: {most_active.name} ({most_active.progress} completions)")
+        if not habit.history:
+            print("No completion history found.")
+            return
+
+        for entry in habit.history:
+            print(entry)
+
+    except:
+        print("Invalid choice!")
 
 
 def main():
@@ -85,7 +101,7 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Show Statistics")  # NEW
+        print("4. View Completion History")  # NEW
         print("5. Save & Exit")
 
         choice = input("Enter choice: ")
@@ -97,7 +113,7 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            show_statistics(habits)
+            show_history(habits)
         elif choice == "5":
             save_habits(habits)
             print("Saved. Exiting...")
