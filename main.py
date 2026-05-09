@@ -2,21 +2,23 @@ import json
 from datetime import datetime
 
 class Habit:
-    def __init__(self, name, progress=0, history=None):
+    def __init__(self, name, progress=0, weekly_count=0):
         self.name = name
         self.progress = progress
-        self.history = history if history else []
+        self.weekly_count = weekly_count
 
     def mark_done(self):
         self.progress += 1
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.history.append(timestamp)
+        self.weekly_count += 1
+
+    def reset_weekly_count(self):
+        self.weekly_count = 0
 
     def to_dict(self):
         return {
             "name": self.name,
             "progress": self.progress,
-            "history": self.history
+            "weekly_count": self.weekly_count
         }
 
     @staticmethod
@@ -24,11 +26,14 @@ class Habit:
         return Habit(
             data["name"],
             data["progress"],
-            data.get("history", [])
+            data.get("weekly_count", 0)
         )
 
     def __str__(self):
-        return f"{self.name} → Days Completed: {self.progress}"
+        return (
+            f"{self.name} → Total: {self.progress} | "
+            f"Weekly: {self.weekly_count}"
+        )
 
 
 def save_habits(habits):
@@ -73,24 +78,27 @@ def mark_habit_done(habits):
 
 
 # 🔥 NEW FEATURE
-def show_history(habits):
-    display_habits(habits)
+def show_weekly_report(habits):
+    if not habits:
+        print("No habits available.")
+        return
 
-    try:
-        index = int(input("Select habit number to view history: ")) - 1
-        habit = habits[index]
+    print("\n=== Weekly Habit Report ===")
 
-        print(f"\nCompletion History for {habit.name}:")
+    total_weekly = 0
 
-        if not habit.history:
-            print("No completion history found.")
-            return
+    for habit in habits:
+        print(f"{habit.name}: {habit.weekly_count} completions this week")
+        total_weekly += habit.weekly_count
 
-        for entry in habit.history:
-            print(entry)
+    print(f"\nTotal Weekly Completions: {total_weekly}")
 
-    except:
-        print("Invalid choice!")
+
+def reset_weekly_report(habits):
+    for habit in habits:
+        habit.reset_weekly_count()
+
+    print("Weekly report reset successfully!")
 
 
 def main():
@@ -101,8 +109,9 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. View Completion History")  # NEW
-        print("5. Save & Exit")
+        print("4. Weekly Report")      # NEW
+        print("5. Reset Weekly Report")
+        print("6. Save & Exit")
 
         choice = input("Enter choice: ")
 
@@ -113,8 +122,10 @@ def main():
         elif choice == "3":
             display_habits(habits)
         elif choice == "4":
-            show_history(habits)
+            show_weekly_report(habits)
         elif choice == "5":
+            reset_weekly_report(habits)
+        elif choice == "6":
             save_habits(habits)
             print("Saved. Exiting...")
             break
@@ -124,4 +135,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
