@@ -1,24 +1,25 @@
 import json
-from datetime import datetime
 
 class Habit:
-    def __init__(self, name, progress=0, weekly_count=0):
+    def __init__(self, name, progress=0, goal=7):
         self.name = name
         self.progress = progress
-        self.weekly_count = weekly_count
+        self.goal = goal
 
     def mark_done(self):
         self.progress += 1
-        self.weekly_count += 1
 
-    def reset_weekly_count(self):
-        self.weekly_count = 0
+    def progress_percentage(self):
+        return min((self.progress / self.goal) * 100, 100)
+
+    def goal_completed(self):
+        return self.progress >= self.goal
 
     def to_dict(self):
         return {
             "name": self.name,
             "progress": self.progress,
-            "weekly_count": self.weekly_count
+            "goal": self.goal
         }
 
     @staticmethod
@@ -26,13 +27,15 @@ class Habit:
         return Habit(
             data["name"],
             data["progress"],
-            data.get("weekly_count", 0)
+            data.get("goal", 7)
         )
 
     def __str__(self):
+        status = "✅ Goal Achieved" if self.goal_completed() else "⏳ In Progress"
+
         return (
-            f"{self.name} → Total: {self.progress} | "
-            f"Weekly: {self.weekly_count}"
+            f"{self.name} → {self.progress}/{self.goal} "
+            f"({self.progress_percentage():.1f}%) | {status}"
         )
 
 
@@ -55,15 +58,23 @@ def display_habits(habits):
         print("No habits found.")
         return
 
-    print("\nYour Habits:")
+    print("\n=== Your Habits ===")
+
     for i, habit in enumerate(habits):
         print(f"{i + 1}. {habit}")
 
 
 def add_habit(habits):
     name = input("Enter habit name: ")
-    habits.append(Habit(name))
-    print("Habit added!")
+
+    try:
+        goal = int(input("Enter target goal count: "))
+    except:
+        goal = 7
+
+    habits.append(Habit(name, goal=goal))
+
+    print("Habit added successfully!")
 
 
 def mark_habit_done(habits):
@@ -72,33 +83,30 @@ def mark_habit_done(habits):
     try:
         index = int(input("Select habit number: ")) - 1
         habits[index].mark_done()
-        print("Habit marked as done!")
+
+        print("Habit marked as completed for today!")
+
     except:
         print("Invalid choice!")
 
 
 # 🔥 NEW FEATURE
-def show_weekly_report(habits):
+def show_goal_summary(habits):
     if not habits:
         print("No habits available.")
         return
 
-    print("\n=== Weekly Habit Report ===")
+    print("\n=== Goal Summary ===")
 
-    total_weekly = 0
+    completed_goals = 0
 
     for habit in habits:
-        print(f"{habit.name}: {habit.weekly_count} completions this week")
-        total_weekly += habit.weekly_count
+        print(habit)
 
-    print(f"\nTotal Weekly Completions: {total_weekly}")
+        if habit.goal_completed():
+            completed_goals += 1
 
-
-def reset_weekly_report(habits):
-    for habit in habits:
-        habit.reset_weekly_count()
-
-    print("Weekly report reset successfully!")
+    print(f"\nGoals Achieved: {completed_goals}/{len(habits)}")
 
 
 def main():
@@ -109,26 +117,28 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Weekly Report")      # NEW
-        print("5. Reset Weekly Report")
-        print("6. Save & Exit")
+        print("4. Goal Summary")   # NEW
+        print("5. Save & Exit")
 
         choice = input("Enter choice: ")
 
         if choice == "1":
             add_habit(habits)
+
         elif choice == "2":
             mark_habit_done(habits)
+
         elif choice == "3":
             display_habits(habits)
+
         elif choice == "4":
-            show_weekly_report(habits)
+            show_goal_summary(habits)
+
         elif choice == "5":
-            reset_weekly_report(habits)
-        elif choice == "6":
             save_habits(habits)
-            print("Saved. Exiting...")
+            print("Habits saved. Exiting...")
             break
+
         else:
             print("Invalid option!")
 
