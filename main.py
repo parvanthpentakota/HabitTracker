@@ -1,25 +1,28 @@
 import json
 
 class Habit:
-    def __init__(self, name, progress=0, goal=7):
+    def __init__(self, name, progress=0, streak=0, longest_streak=0):
         self.name = name
         self.progress = progress
-        self.goal = goal
+        self.streak = streak
+        self.longest_streak = longest_streak
 
     def mark_done(self):
         self.progress += 1
+        self.streak += 1
 
-    def progress_percentage(self):
-        return min((self.progress / self.goal) * 100, 100)
+        if self.streak > self.longest_streak:
+            self.longest_streak = self.streak
 
-    def goal_completed(self):
-        return self.progress >= self.goal
+    def reset_streak(self):
+        self.streak = 0
 
     def to_dict(self):
         return {
             "name": self.name,
             "progress": self.progress,
-            "goal": self.goal
+            "streak": self.streak,
+            "longest_streak": self.longest_streak
         }
 
     @staticmethod
@@ -27,15 +30,15 @@ class Habit:
         return Habit(
             data["name"],
             data["progress"],
-            data.get("goal", 7)
+            data.get("streak", 0),
+            data.get("longest_streak", 0)
         )
 
     def __str__(self):
-        status = "✅ Goal Achieved" if self.goal_completed() else "⏳ In Progress"
-
         return (
-            f"{self.name} → {self.progress}/{self.goal} "
-            f"({self.progress_percentage():.1f}%) | {status}"
+            f"{self.name} → Progress: {self.progress} | "
+            f"Current Streak: {self.streak} | "
+            f"Longest Streak: {self.longest_streak}"
         )
 
 
@@ -66,13 +69,7 @@ def display_habits(habits):
 
 def add_habit(habits):
     name = input("Enter habit name: ")
-
-    try:
-        goal = int(input("Enter target goal count: "))
-    except:
-        goal = 7
-
-    habits.append(Habit(name, goal=goal))
+    habits.append(Habit(name))
 
     print("Habit added successfully!")
 
@@ -82,31 +79,42 @@ def mark_habit_done(habits):
 
     try:
         index = int(input("Select habit number: ")) - 1
+
         habits[index].mark_done()
 
-        print("Habit marked as completed for today!")
+        print("Habit marked as done!")
 
     except:
         print("Invalid choice!")
 
 
 # 🔥 NEW FEATURE
-def show_goal_summary(habits):
+def reset_habit_streak(habits):
+    display_habits(habits)
+
+    try:
+        index = int(input("Select habit number to reset streak: ")) - 1
+
+        habits[index].reset_streak()
+
+        print("Current streak reset!")
+
+    except:
+        print("Invalid choice!")
+
+
+def show_streak_summary(habits):
     if not habits:
         print("No habits available.")
         return
 
-    print("\n=== Goal Summary ===")
-
-    completed_goals = 0
+    print("\n=== Streak Summary ===")
 
     for habit in habits:
-        print(habit)
-
-        if habit.goal_completed():
-            completed_goals += 1
-
-    print(f"\nGoals Achieved: {completed_goals}/{len(habits)}")
+        print(
+            f"{habit.name} → Current: {habit.streak}, "
+            f"Longest: {habit.longest_streak}"
+        )
 
 
 def main():
@@ -117,8 +125,9 @@ def main():
         print("1. Add Habit")
         print("2. Mark Habit as Done")
         print("3. View Habits")
-        print("4. Goal Summary")   # NEW
-        print("5. Save & Exit")
+        print("4. Reset Streak")        # NEW
+        print("5. Streak Summary")      # NEW
+        print("6. Save & Exit")
 
         choice = input("Enter choice: ")
 
@@ -132,10 +141,14 @@ def main():
             display_habits(habits)
 
         elif choice == "4":
-            show_goal_summary(habits)
+            reset_habit_streak(habits)
 
         elif choice == "5":
+            show_streak_summary(habits)
+
+        elif choice == "6":
             save_habits(habits)
+
             print("Habits saved. Exiting...")
             break
 
