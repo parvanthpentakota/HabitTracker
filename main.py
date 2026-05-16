@@ -1,52 +1,48 @@
 # habit_tracker.py
 
-habits = []
+habits = {}
 
 while True:
-    print("\n=== Habit Tracker ===")
+    print("\n===== Habit Tracker =====")
     print("1. Add Habit")
     print("2. View Habits")
-    print("3. Mark Habit as Completed")
+    print("3. Mark Habit Complete")
     print("4. Exit")
 
     choice = input("Enter your choice: ")
 
     if choice == "1":
-        habit = input("Enter habit name: ")
-        habits.append({"name": habit, "completed": False})
-        print("Habit added successfully!")
+        habit_name = input("Enter habit name: ")
+
+        if habit_name in habits:
+            print("Habit already exists!")
+        else:
+            habits[habit_name] = False
+            print(f"{habit_name} added successfully.")
 
     elif choice == "2":
+
         if not habits:
-            print("No habits added yet.")
+            print("No habits found.")
         else:
             print("\nYour Habits:")
-            for index, habit in enumerate(habits, start=1):
-                status = "✅" if habit["completed"] else "❌"
-                print(f"{index}. {habit['name']} - {status}")
+            for habit, status in habits.items():
+                status_text = "Completed ✅" if status else "Pending ❌"
+                print(f"- {habit}: {status_text}")
 
     elif choice == "3":
-        if not habits:
-            print("No habits available.")
+
+        habit_name = input("Enter habit name to mark complete: ")
+
+        if habit_name in habits:
+            habits[habit_name] = True
+            print(f"{habit_name} marked as completed.")
         else:
-            for index, habit in enumerate(habits, start=1):
-                print(f"{index}. {habit['name']}")
-
-            try:
-                habit_index = int(input("Enter habit number to mark completed: ")) - 1
-
-                if 0 <= habit_index < len(habits):
-                    habits[habit_index]["completed"] = True
-                    print("Habit marked as completed!")
-                else:
-                    print("Invalid habit number.")
-
-            except ValueError:
-                print("Please enter a valid number.")
+            print("Habit not found.")
 
     elif choice == "4":
         print("Exiting Habit Tracker...")
         break
 
     else:
-        print("Invalid choice. Try again.")
+        print("Invalid choice. Please try again.")
