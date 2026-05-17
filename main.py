@@ -1,48 +1,58 @@
 # habit_tracker.py
 
-habits = {}
+habits = []
+
+def add_habit():
+    habit = input("Enter new habit: ")
+    habits.append({"habit": habit, "completed": False})
+    print("Habit added successfully!")
+
+def view_habits():
+    if not habits:
+        print("No habits available.")
+    else:
+        print("\n===== Your Habits =====")
+        for index, item in enumerate(habits, start=1):
+            status = "✅ Completed" if item["completed"] else "❌ Pending"
+            print(f"{index}. {item['habit']} - {status}")
+
+def complete_habit():
+    view_habits()
+
+    try:
+        choice = int(input("Enter habit number to mark complete: "))
+
+        if 1 <= choice <= len(habits):
+            habits[choice - 1]["completed"] = True
+            print("Habit marked as completed!")
+        else:
+            print("Invalid habit number.")
+
+    except ValueError:
+        print("Please enter a valid number.")
 
 while True:
-    print("\n===== Habit Tracker =====")
+
+    print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
     print("2. View Habits")
-    print("3. Mark Habit Complete")
+    print("3. Complete Habit")
     print("4. Exit")
 
-    choice = input("Enter your choice: ")
+    option = input("Choose an option: ")
 
-    if choice == "1":
-        habit_name = input("Enter habit name: ")
+    if option == "1":
+        add_habit()
 
-        if habit_name in habits:
-            print("Habit already exists!")
-        else:
-            habits[habit_name] = False
-            print(f"{habit_name} added successfully.")
+    elif option == "2":
+        view_habits()
 
-    elif choice == "2":
+    elif option == "3":
+        complete_habit()
 
-        if not habits:
-            print("No habits found.")
-        else:
-            print("\nYour Habits:")
-            for habit, status in habits.items():
-                status_text = "Completed ✅" if status else "Pending ❌"
-                print(f"- {habit}: {status_text}")
-
-    elif choice == "3":
-
-        habit_name = input("Enter habit name to mark complete: ")
-
-        if habit_name in habits:
-            habits[habit_name] = True
-            print(f"{habit_name} marked as completed.")
-        else:
-            print("Habit not found.")
-
-    elif choice == "4":
+    elif option == "4":
         print("Exiting Habit Tracker...")
         break
 
     else:
-        print("Invalid choice. Please try again.")
+        print("Invalid option. Try again.")
