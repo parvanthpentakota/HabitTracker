@@ -1,65 +1,52 @@
 # habit_tracker.py
 
-# List to store all habits
-habit_data = []
+habits = []
 
-# Function to add a new habit
 def add_habit():
 
-    # Take habit name from user
-    habit_name = input("Enter habit name: ")
+    name = input("Enter habit name: ")
 
-    # Create a dictionary for one habit
     habit = {
-        "name": habit_name,
-        "completed_days": 0,
-        "status": "Pending"
+        "name": name,
+        "streak": 0,
+        "completed": False
     }
 
-    # Add habit dictionary into list
-    habit_data.append(habit)
+    habits.append(habit)
 
     print("Habit added successfully!")
 
+def view_habits():
 
-# Function to display all habits
-def show_habits():
-
-    # Check if list is empty
-    if not habit_data:
-        print("No habits available.")
+    if not habits:
+        print("No habits found.")
         return
 
-    print("\n===== Habit Progress =====")
+    print("\n===== Habit List =====")
 
-    # Loop through habits
-    for index, habit in enumerate(habit_data, start=1):
+    for index, habit in enumerate(habits, start=1):
+
+        status = "Completed ✅" if habit["completed"] else "Pending ❌"
 
         print(
             f"{index}. "
-            f"Habit: {habit['name']} | "
-            f"Completed Days: {habit['completed_days']} | "
-            f"Status: {habit['status']}"
+            f"{habit['name']} | "
+            f"Streak: {habit['streak']} | "
+            f"Status: {status}"
         )
 
-
-# Function to mark habit as completed
 def complete_habit():
 
-    # First display all habits
-    show_habits()
+    view_habits()
 
     try:
 
-        # User selects habit number
         choice = int(input("Enter habit number to complete: "))
 
-        # Validate choice
-        if 1 <= choice <= len(habit_data):
+        if 1 <= choice <= len(habits):
 
-            # Update selected habit
-            habit_data[choice - 1]["completed_days"] += 1
-            habit_data[choice - 1]["status"] = "Completed ✅"
+            habits[choice - 1]["completed"] = True
+            habits[choice - 1]["streak"] += 1
 
             print("Habit marked as completed!")
 
@@ -68,36 +55,44 @@ def complete_habit():
 
     except ValueError:
 
-        # Handle invalid number input
         print("Please enter a valid number.")
 
+def reset_habits():
 
-# Main program loop
+    for habit in habits:
+
+        habit["completed"] = False
+
+    print("All habits reset for a new day!")
+
 while True:
 
-    print("\n===== Habit Tracker Menu =====")
+    print("\n===== Habit Tracker =====")
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Exit")
+    print("4. Reset Daily Status")
+    print("5. Exit")
 
-    # Take menu option
-    option = input("Enter your choice: ")
+    option = input("Enter your option: ")
 
-    # Menu conditions
     if option == "1":
 
         add_habit()
 
     elif option == "2":
 
-        show_habits()
+        view_habits()
 
     elif option == "3":
 
         complete_habit()
 
     elif option == "4":
+
+        reset_habits()
+
+    elif option == "5":
 
         print("Exiting Habit Tracker...")
         break
