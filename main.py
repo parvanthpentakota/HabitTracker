@@ -1,62 +1,62 @@
 # habit_tracker.py
 
-habits = []
+habit_list = []
 
 def add_habit():
 
     habit_name = input("Enter habit name: ")
 
-    new_habit = {
+    habit = {
         "name": habit_name,
         "streak": 0,
-        "completed_today": False
+        "completed": False
     }
 
-    habits.append(new_habit)
+    habit_list.append(habit)
 
     print("Habit added successfully!")
 
-def view_habits():
+def display_habits():
 
-    if not habits:
-        print("No habits available.")
+    if not habit_list:
+        print("No habits added yet.")
         return
 
-    print("\n===== Habit Overview =====")
+    print("\n===== Habit Dashboard =====")
 
-    for index, habit in enumerate(habits, start=1):
+    for index, habit in enumerate(habit_list, start=1):
 
-        status = "✅ Done" if habit["completed_today"] else "❌ Pending"
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
             f"{index}. "
-            f"{habit['name']} | "
+            f"Habit: {habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
 
 def complete_habit():
 
-    view_habits()
+    display_habits()
 
     try:
 
         choice = int(input("Enter habit number to complete: "))
 
-        if 1 <= choice <= len(habits):
+        if 1 <= choice <= len(habit_list):
 
-            selected_habit = habits[choice - 1]
+            selected_habit = habit_list[choice - 1]
 
-            if selected_habit["completed_today"]:
+            if selected_habit["completed"]:
 
                 print("Habit already completed today.")
 
             else:
 
-                selected_habit["completed_today"] = True
+                selected_habit["completed"] = True
                 selected_habit["streak"] += 1
 
-                print("Habit marked as completed!")
+                print("Habit completed successfully!")
 
         else:
 
@@ -66,13 +66,13 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def reset_day():
+def reset_habits():
 
-    for habit in habits:
+    for habit in habit_list:
 
-        habit["completed_today"] = False
+        habit["completed"] = False
 
-    print("Daily habit status reset successfully!")
+    print("All habits reset for the next day!")
 
 while True:
 
@@ -80,10 +80,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Reset Daily Status")
+    print("4. Reset Habits")
     print("5. Exit")
 
-    option = input("Choose an option: ")
+    option = input("Enter your option: ")
 
     if option == "1":
 
@@ -91,7 +91,7 @@ while True:
 
     elif option == "2":
 
-        view_habits()
+        display_habits()
 
     elif option == "3":
 
@@ -99,7 +99,7 @@ while True:
 
     elif option == "4":
 
-        reset_day()
+        reset_habits()
 
     elif option == "5":
 
@@ -108,4 +108,4 @@ while True:
 
     else:
 
-        print("Invalid option. Try again.")
+        print("Invalid option. Please try again.")
