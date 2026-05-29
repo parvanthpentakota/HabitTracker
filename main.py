@@ -1,38 +1,35 @@
 # habit_tracker.py
 
-habit_records = []
+habits = []
 
 def add_habit():
-
-    habit_name = input("Enter habit name: ")
+    name = input("Enter habit name: ")
 
     habit = {
-        "name": habit_name,
+        "name": name,
         "streak": 0,
-        "completed_today": False
+        "completed": False
     }
 
-    habit_records.append(habit)
-
+    habits.append(habit)
     print("Habit added successfully!")
 
 def view_habits():
 
-    if not habit_records:
+    if not habits:
         print("No habits available.")
         return
 
-    print("\n===== Habit Tracker Dashboard =====")
+    print("\n===== Habit Summary =====")
 
-    for index, habit in enumerate(habit_records, start=1):
+    for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed_today"] else "❌ Pending"
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. "
-            f"Habit: {habit['name']} | "
-            f"Current Streak: {habit['streak']} | "
-            f"Today's Status: {status}"
+            f"{index}. {habit['name']} | "
+            f"Streak: {habit['streak']} | "
+            f"Status: {status}"
         )
 
 def complete_habit():
@@ -41,60 +38,34 @@ def complete_habit():
 
     try:
 
-        choice = int(input("Enter habit number to complete: "))
+        choice = int(input("Enter habit number: "))
 
-        if 1 <= choice <= len(habit_records):
+        if 1 <= choice <= len(habits):
 
-            selected_habit = habit_records[choice - 1]
+            habits[choice - 1]["completed"] = True
+            habits[choice - 1]["streak"] += 1
 
-            if selected_habit["completed_today"]:
-
-                print("Habit already completed today.")
-
-            else:
-
-                selected_habit["completed_today"] = True
-                selected_habit["streak"] += 1
-
-                print("Habit marked as completed!")
+            print("Habit completed successfully!")
 
         else:
-
             print("Invalid habit number.")
 
     except ValueError:
-
         print("Please enter a valid number.")
 
-def reset_daily_status():
+def show_statistics():
 
-    for habit in habit_records:
+    total = len(habits)
 
-        habit["completed_today"] = False
+    completed = sum(
+        1 for habit in habits
+        if habit["completed"]
+    )
 
-    print("Daily habit status reset successfully!")
-
-def delete_habit():
-
-    view_habits()
-
-    try:
-
-        choice = int(input("Enter habit number to delete: "))
-
-        if 1 <= choice <= len(habit_records):
-
-            removed_habit = habit_records.pop(choice - 1)
-
-            print(f"{removed_habit['name']} deleted successfully!")
-
-        else:
-
-            print("Invalid habit number.")
-
-    except ValueError:
-
-        print("Please enter a valid number.")
+    print("\n===== Statistics =====")
+    print(f"Total Habits: {total}")
+    print(f"Completed Today: {completed}")
+    print(f"Pending: {total - completed}")
 
 while True:
 
@@ -102,37 +73,26 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Reset Daily Status")
-    print("5. Delete Habit")
-    print("6. Exit")
+    print("4. View Statistics")
+    print("5. Exit")
 
-    option = input("Choose an option: ")
+    option = input("Enter your choice: ")
 
     if option == "1":
-
         add_habit()
 
     elif option == "2":
-
         view_habits()
 
     elif option == "3":
-
         complete_habit()
 
     elif option == "4":
-
-        reset_daily_status()
+        show_statistics()
 
     elif option == "5":
-
-        delete_habit()
-
-    elif option == "6":
-
         print("Exiting Habit Tracker...")
         break
 
     else:
-
-        print("Invalid option. Please try again.")
+        print("Invalid choice. Try again.")
