@@ -3,31 +3,32 @@
 habits = []
 
 def add_habit():
-    name = input("Enter habit name: ")
 
-    habit = {
-        "name": name,
+    habit_name = input("Enter habit name: ")
+
+    habits.append({
+        "name": habit_name,
         "streak": 0,
         "completed": False
-    }
+    })
 
-    habits.append(habit)
     print("Habit added successfully!")
 
 def view_habits():
 
     if not habits:
-        print("No habits available.")
+        print("No habits found.")
         return
 
-    print("\n===== Habit Summary =====")
+    print("\n===== Habit Dashboard =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        status = "✅ Done" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. {habit['name']} | "
+            f"{index}. "
+            f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -38,34 +39,44 @@ def complete_habit():
 
     try:
 
-        choice = int(input("Enter habit number: "))
+        choice = int(input("Enter habit number to complete: "))
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["completed"] = True
-            habits[choice - 1]["streak"] += 1
+            selected_habit = habits[choice - 1]
 
-            print("Habit completed successfully!")
+            if selected_habit["completed"]:
+
+                print("Habit already completed today.")
+
+            else:
+
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
+
+                print("Habit completed successfully!")
 
         else:
+
             print("Invalid habit number.")
 
     except ValueError:
+
         print("Please enter a valid number.")
 
-def show_statistics():
+def longest_streak():
 
-    total = len(habits)
+    if not habits:
+        print("No habits available.")
+        return
 
-    completed = sum(
-        1 for habit in habits
-        if habit["completed"]
+    best_habit = max(habits, key=lambda habit: habit["streak"])
+
+    print("\n===== Longest Streak =====")
+    print(
+        f"Habit: {best_habit['name']} | "
+        f"Streak: {best_habit['streak']} days"
     )
-
-    print("\n===== Statistics =====")
-    print(f"Total Habits: {total}")
-    print(f"Completed Today: {completed}")
-    print(f"Pending: {total - completed}")
 
 while True:
 
@@ -73,26 +84,32 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Statistics")
+    print("4. View Longest Streak")
     print("5. Exit")
 
     option = input("Enter your choice: ")
 
     if option == "1":
+
         add_habit()
 
     elif option == "2":
+
         view_habits()
 
     elif option == "3":
+
         complete_habit()
 
     elif option == "4":
-        show_statistics()
+
+        longest_streak()
 
     elif option == "5":
+
         print("Exiting Habit Tracker...")
         break
 
     else:
-        print("Invalid choice. Try again.")
+
+        print("Invalid choice. Please try again.")
