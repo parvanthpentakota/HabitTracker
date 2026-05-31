@@ -8,8 +8,8 @@ def add_habit():
 
     habits.append({
         "name": habit_name,
-        "streak": 0,
-        "completed": False
+        "completed": False,
+        "streak": 0
     })
 
     print("Habit added successfully!")
@@ -17,7 +17,7 @@ def add_habit():
 def view_habits():
 
     if not habits:
-        print("No habits found.")
+        print("No habits available.")
         return
 
     print("\n===== Habit Dashboard =====")
@@ -45,16 +45,16 @@ def complete_habit():
 
             selected_habit = habits[choice - 1]
 
-            if selected_habit["completed"]:
-
-                print("Habit already completed today.")
-
-            else:
+            if not selected_habit["completed"]:
 
                 selected_habit["completed"] = True
                 selected_habit["streak"] += 1
 
                 print("Habit completed successfully!")
+
+            else:
+
+                print("Habit already completed.")
 
         else:
 
@@ -72,10 +72,10 @@ def longest_streak():
 
     best_habit = max(habits, key=lambda habit: habit["streak"])
 
-    print("\n===== Longest Streak =====")
+    print("\n===== Best Performing Habit =====")
     print(
         f"Habit: {best_habit['name']} | "
-        f"Streak: {best_habit['streak']} days"
+        f"Streak: {best_habit['streak']}"
     )
 
 while True:
@@ -84,10 +84,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Longest Streak")
+    print("4. View Best Streak")
     print("5. Exit")
 
-    option = input("Enter your choice: ")
+    option = input("Choose an option: ")
 
     if option == "1":
 
@@ -112,4 +112,4 @@ while True:
 
     else:
 
-        print("Invalid choice. Please try again.")
+        print("Invalid option. Please try again.")
