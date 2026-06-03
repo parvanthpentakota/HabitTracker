@@ -27,7 +27,8 @@ def view_habits():
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. {habit['name']} | "
+            f"{index}. "
+            f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -42,12 +43,12 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            habit = habits[choice - 1]
+            selected_habit = habits[choice - 1]
 
-            if not habit["completed"]:
+            if not selected_habit["completed"]:
 
-                habit["completed"] = True
-                habit["streak"] += 1
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
 
                 print("Habit completed successfully!")
 
@@ -63,21 +64,23 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def show_summary():
+def habit_completion_rate():
 
-    total_habits = len(habits)
+    if not habits:
+        print("No habits available.")
+        return
 
-    completed_habits = sum(
+    completed = sum(
         1 for habit in habits
         if habit["completed"]
     )
 
-    pending_habits = total_habits - completed_habits
+    percentage = (completed / len(habits)) * 100
 
-    print("\n===== Daily Summary =====")
-    print(f"Total Habits: {total_habits}")
-    print(f"Completed: {completed_habits}")
-    print(f"Pending: {pending_habits}")
+    print("\n===== Completion Report =====")
+    print(f"Completed Habits: {completed}")
+    print(f"Total Habits: {len(habits)}")
+    print(f"Completion Rate: {percentage:.2f}%")
 
 while True:
 
@@ -85,10 +88,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Daily Summary")
+    print("4. View Completion Report")
     print("5. Exit")
 
-    option = input("Enter your choice: ")
+    option = input("Choose an option: ")
 
     if option == "1":
 
@@ -104,7 +107,7 @@ while True:
 
     elif option == "4":
 
-        show_summary()
+        habit_completion_rate()
 
     elif option == "5":
 
