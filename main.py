@@ -6,18 +6,20 @@ def add_habit():
 
     habit_name = input("Enter habit name: ")
 
-    habits.append({
+    habit = {
         "name": habit_name,
         "streak": 0,
         "completed": False
-    })
+    }
+
+    habits.append(habit)
 
     print("Habit added successfully!")
 
 def view_habits():
 
     if not habits:
-        print("No habits available.")
+        print("No habits found.")
         return
 
     print("\n===== Habit Dashboard =====")
@@ -27,8 +29,7 @@ def view_habits():
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. "
-            f"{habit['name']} | "
+            f"{index}. {habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -54,7 +55,7 @@ def complete_habit():
 
             else:
 
-                print("Habit already completed today.")
+                print("Habit already completed.")
 
         else:
 
@@ -82,6 +83,7 @@ def search_habit():
             found = True
 
     if not found:
+
         print("Habit not found.")
 
 while True:
