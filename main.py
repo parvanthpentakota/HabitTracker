@@ -6,20 +6,18 @@ def add_habit():
 
     habit_name = input("Enter habit name: ")
 
-    habit = {
+    habits.append({
         "name": habit_name,
         "streak": 0,
         "completed": False
-    }
-
-    habits.append(habit)
+    })
 
     print("Habit added successfully!")
 
 def view_habits():
 
     if not habits:
-        print("No habits found.")
+        print("No habits available.")
         return
 
     print("\n===== Habit Dashboard =====")
@@ -29,7 +27,8 @@ def view_habits():
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. {habit['name']} | "
+            f"{index}. "
+            f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -65,26 +64,19 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def search_habit():
+def view_top_streak():
 
-    keyword = input("Enter habit name to search: ").lower()
+    if not habits:
+        print("No habits available.")
+        return
 
-    found = False
+    top_habit = max(habits, key=lambda habit: habit["streak"])
 
-    for habit in habits:
-
-        if keyword in habit["name"].lower():
-
-            print(
-                f"Found: {habit['name']} | "
-                f"Streak: {habit['streak']}"
-            )
-
-            found = True
-
-    if not found:
-
-        print("Habit not found.")
+    print("\n===== Top Streak Habit =====")
+    print(
+        f"Habit: {top_habit['name']} | "
+        f"Streak: {top_habit['streak']}"
+    )
 
 while True:
 
@@ -92,7 +84,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Search Habit")
+    print("4. View Top Streak")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -111,7 +103,7 @@ while True:
 
     elif option == "4":
 
-        search_habit()
+        view_top_streak()
 
     elif option == "5":
 
