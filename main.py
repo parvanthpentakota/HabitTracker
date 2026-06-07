@@ -64,19 +64,22 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def view_top_streak():
+def view_pending_habits():
 
-    if not habits:
-        print("No habits available.")
-        return
+    print("\n===== Pending Habits =====")
 
-    top_habit = max(habits, key=lambda habit: habit["streak"])
+    pending_found = False
 
-    print("\n===== Top Streak Habit =====")
-    print(
-        f"Habit: {top_habit['name']} | "
-        f"Streak: {top_habit['streak']}"
-    )
+    for habit in habits:
+
+        if not habit["completed"]:
+
+            print(f"- {habit['name']}")
+            pending_found = True
+
+    if not pending_found:
+
+        print("No pending habits remaining!")
 
 while True:
 
@@ -84,7 +87,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Top Streak")
+    print("4. View Pending Habits")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -103,7 +106,7 @@ while True:
 
     elif option == "4":
 
-        view_top_streak()
+        view_pending_habits()
 
     elif option == "5":
 
