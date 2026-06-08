@@ -27,8 +27,7 @@ def view_habits():
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. "
-            f"{habit['name']} | "
+            f"{index}. {habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -43,12 +42,12 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected_habit = habits[choice - 1]
+            habit = habits[choice - 1]
 
-            if not selected_habit["completed"]:
+            if not habit["completed"]:
 
-                selected_habit["completed"] = True
-                selected_habit["streak"] += 1
+                habit["completed"] = True
+                habit["streak"] += 1
 
                 print("Habit completed successfully!")
 
@@ -64,22 +63,21 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def view_pending_habits():
+def habit_summary():
 
-    print("\n===== Pending Habits =====")
+    total_habits = len(habits)
 
-    pending_found = False
+    completed_habits = sum(
+        1 for habit in habits
+        if habit["completed"]
+    )
 
-    for habit in habits:
+    pending_habits = total_habits - completed_habits
 
-        if not habit["completed"]:
-
-            print(f"- {habit['name']}")
-            pending_found = True
-
-    if not pending_found:
-
-        print("No pending habits remaining!")
+    print("\n===== Daily Summary =====")
+    print(f"Total Habits     : {total_habits}")
+    print(f"Completed Habits : {completed_habits}")
+    print(f"Pending Habits   : {pending_habits}")
 
 while True:
 
@@ -87,7 +85,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Pending Habits")
+    print("4. Daily Summary")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -106,7 +104,7 @@ while True:
 
     elif option == "4":
 
-        view_pending_habits()
+        habit_summary()
 
     elif option == "5":
 
