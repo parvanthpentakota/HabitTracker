@@ -63,21 +63,25 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def habit_summary():
+def search_habit():
 
-    total_habits = len(habits)
+    keyword = input("Enter habit name to search: ")
 
-    completed_habits = sum(
-        1 for habit in habits
-        if habit["completed"]
-    )
+    found = False
 
-    pending_habits = total_habits - completed_habits
+    for habit in habits:
 
-    print("\n===== Daily Summary =====")
-    print(f"Total Habits     : {total_habits}")
-    print(f"Completed Habits : {completed_habits}")
-    print(f"Pending Habits   : {pending_habits}")
+        if keyword.lower() in habit["name"].lower():
+
+            print(
+                f"Found: {habit['name']} | "
+                f"Streak: {habit['streak']}"
+            )
+
+            found = True
+
+    if not found:
+        print("Habit not found.")
 
 while True:
 
@@ -85,7 +89,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Daily Summary")
+    print("4. Search Habit")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -104,7 +108,7 @@ while True:
 
     elif option == "4":
 
-        habit_summary()
+        search_habit()
 
     elif option == "5":
 
