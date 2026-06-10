@@ -63,25 +63,26 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def search_habit():
+def sort_habits_by_streak():
 
-    keyword = input("Enter habit name to search: ")
+    if not habits:
+        print("No habits available.")
+        return
 
-    found = False
+    sorted_habits = sorted(
+        habits,
+        key=lambda habit: habit["streak"],
+        reverse=True
+    )
 
-    for habit in habits:
+    print("\n===== Habits Ranked By Streak =====")
 
-        if keyword.lower() in habit["name"].lower():
+    for habit in sorted_habits:
 
-            print(
-                f"Found: {habit['name']} | "
-                f"Streak: {habit['streak']}"
-            )
-
-            found = True
-
-    if not found:
-        print("Habit not found.")
+        print(
+            f"{habit['name']} | "
+            f"Streak: {habit['streak']}"
+        )
 
 while True:
 
@@ -89,7 +90,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Search Habit")
+    print("4. Rank Habits By Streak")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -108,7 +109,7 @@ while True:
 
     elif option == "4":
 
-        search_habit()
+        sort_habits_by_streak()
 
     elif option == "5":
 
@@ -118,3 +119,4 @@ while True:
     else:
 
         print("Invalid option. Please try again.")
+
