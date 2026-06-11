@@ -63,6 +63,30 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
+def edit_habit():
+
+    view_habits()
+
+    try:
+
+        choice = int(input("Enter habit number to edit: "))
+
+        if 1 <= choice <= len(habits):
+
+            new_name = input("Enter new habit name: ")
+
+            habits[choice - 1]["name"] = new_name
+
+            print("Habit updated successfully!")
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
+
 def sort_habits_by_streak():
 
     if not habits:
@@ -90,33 +114,30 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Rank Habits By Streak")
-    print("5. Exit")
+    print("4. Edit Habit")
+    print("5. Rank Habits By Streak")
+    print("6. Exit")
 
     option = input("Choose an option: ")
 
     if option == "1":
-
         add_habit()
 
     elif option == "2":
-
         view_habits()
 
     elif option == "3":
-
         complete_habit()
 
     elif option == "4":
-
-        sort_habits_by_streak()
+        edit_habit()
 
     elif option == "5":
+        sort_habits_by_streak()
 
+    elif option == "6":
         print("Exiting Habit Tracker...")
         break
 
     else:
-
         print("Invalid option. Please try again.")
-
