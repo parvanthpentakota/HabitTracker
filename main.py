@@ -27,7 +27,8 @@ def view_habits():
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
-            f"{index}. {habit['name']} | "
+            f"{index}. "
+            f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -87,6 +88,28 @@ def edit_habit():
 
         print("Please enter a valid number.")
 
+def delete_habit():
+
+    view_habits()
+
+    try:
+
+        choice = int(input("Enter habit number to delete: "))
+
+        if 1 <= choice <= len(habits):
+
+            removed_habit = habits.pop(choice - 1)
+
+            print(f"{removed_habit['name']} deleted successfully!")
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
+
 def sort_habits_by_streak():
 
     if not habits:
@@ -115,29 +138,41 @@ while True:
     print("2. View Habits")
     print("3. Complete Habit")
     print("4. Edit Habit")
-    print("5. Rank Habits By Streak")
-    print("6. Exit")
+    print("5. Delete Habit")
+    print("6. Rank Habits By Streak")
+    print("7. Exit")
 
     option = input("Choose an option: ")
 
     if option == "1":
+
         add_habit()
 
     elif option == "2":
+
         view_habits()
 
     elif option == "3":
+
         complete_habit()
 
     elif option == "4":
+
         edit_habit()
 
     elif option == "5":
-        sort_habits_by_streak()
+
+        delete_habit()
 
     elif option == "6":
+
+        sort_habits_by_streak()
+
+    elif option == "7":
+
         print("Exiting Habit Tracker...")
         break
 
     else:
+
         print("Invalid option. Please try again.")
