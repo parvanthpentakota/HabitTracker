@@ -53,7 +53,7 @@ def complete_habit():
 
             else:
 
-                print("Habit already completed.")
+                print("Habit already completed today.")
 
         else:
 
@@ -81,6 +81,7 @@ def search_habit():
             found = True
 
     if not found:
+
         print("Habit not found.")
 
 while True:
