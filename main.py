@@ -63,26 +63,22 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def sort_habits_by_streak():
+def show_longest_streak():
 
     if not habits:
         print("No habits available.")
         return
 
-    sorted_habits = sorted(
+    best_habit = max(
         habits,
-        key=lambda habit: habit["streak"],
-        reverse=True
+        key=lambda habit: habit["streak"]
     )
 
-    print("\n===== Habits Ranked By Streak =====")
-
-    for habit in sorted_habits:
-
-        print(
-            f"{habit['name']} | "
-            f"Streak: {habit['streak']}"
-        )
+    print("\n===== Longest Streak =====")
+    print(
+        f"Habit: {best_habit['name']} | "
+        f"Streak: {best_habit['streak']}"
+    )
 
 while True:
 
@@ -90,32 +86,26 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Rank Habits By Streak")
+    print("4. Show Longest Streak")
     print("5. Exit")
 
     option = input("Choose an option: ")
 
     if option == "1":
-
         add_habit()
 
     elif option == "2":
-
         view_habits()
 
     elif option == "3":
-
         complete_habit()
 
     elif option == "4":
-
-        sort_habits_by_streak()
+        show_longest_streak()
 
     elif option == "5":
-
         print("Exiting Habit Tracker...")
         break
 
     else:
-
         print("Invalid option. Please try again.")
