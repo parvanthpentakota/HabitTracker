@@ -1,48 +1,50 @@
-import sqlite3
-import csv
+# habit_tracker.py
 
-# Database Setup
-conn = sqlite3.connect("habits.db")
-cursor = conn.cursor()
+import json
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS habits(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE,
-    streak INTEGER,
-    completed INTEGER
-)
-""")
-conn.commit()
-
+habits = []
 
 def add_habit():
 
     habit_name = input("Enter habit name: ")
 
-    try:
+    habits.append({
+        "name": habit_name,
+        "streak": 0,
+        "completed": False
+    })
 
-        cursor.execute(
-            "INSERT INTO habits(name, streak, completed) VALUES(?,?,?)",
-            (habit_name, 0, 0)
+    print("Habit added successfully!")
+
+def save_habits():
+
+    with open("habits.json", "w") as file:
+
+        json.dump(
+            habits,
+            file,
+            indent=4
         )
 
-        conn.commit()
+    print("Habits saved successfully!")
 
-        print("Habit added successfully!")
+def load_habits():
 
-    except sqlite3.IntegrityError:
+    global habits
 
-        print("Habit already exists.")
+    try:
 
+        with open("habits.json", "r") as file:
+
+            habits = json.load(file)
+
+        print("Habits loaded successfully!")
+
+    except FileNotFoundError:
+
+        print("No saved habits found.")
 
 def view_habits():
-
-    cursor.execute(
-        "SELECT id, name, streak, completed FROM habits"
-    )
-
-    habits = cursor.fetchall()
 
     if not habits:
 
@@ -51,21 +53,20 @@ def view_habits():
 
     print("\n===== Habit Dashboard =====")
 
-    for habit in habits:
+    for index, habit in enumerate(habits, start=1):
 
         status = (
             "✅ Completed"
-            if habit[3]
+            if habit["completed"]
             else "❌ Pending"
         )
 
         print(
-            f"{habit[0]}. "
-            f"{habit[1]} | "
-            f"Streak: {habit[2]} | "
+            f"{index}. "
+            f"{habit['name']} | "
+            f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
-
 
 def complete_habit():
 
@@ -73,167 +74,28 @@ def complete_habit():
 
     try:
 
-        habit_id = int(
-            input("Enter habit ID to complete: ")
+        choice = int(
+            input(
+                "Enter habit number to complete: "
+            )
         )
 
-        cursor.execute(
-            """
-            UPDATE habits
-            SET streak = streak + 1,
-                completed = 1
-            WHERE id = ?
-            """,
-            (habit_id,)
-        )
+        if 1 <= choice <= len(habits):
 
-        conn.commit()
+            habits[choice - 1]["completed"] = True
+            habits[choice - 1]["streak"] += 1
 
-        print("Habit completed successfully!")
+            print(
+                "Habit completed successfully!"
+            )
+
+        else:
+
+            print("Invalid habit number.")
 
     except ValueError:
 
         print("Please enter a valid number.")
-
-
-def show_longest_streak():
-
-    cursor.execute(
-        """
-        SELECT name, streak
-        FROM habits
-        ORDER BY streak DESC
-        LIMIT 1
-        """
-    )
-
-    result = cursor.fetchone()
-
-    if result:
-
-        print("\n===== Longest Streak =====")
-        print(
-            f"Habit: {result[0]} | "
-            f"Streak: {result[1]}"
-        )
-
-    else:
-
-        print("No habits available.")
-
-
-def rank_habits():
-
-    cursor.execute(
-        """
-        SELECT name, streak
-        FROM habits
-        ORDER BY streak DESC
-        """
-    )
-
-    habits = cursor.fetchall()
-
-    print("\n===== Habit Ranking =====")
-
-    for rank, habit in enumerate(
-        habits,
-        start=1
-    ):
-
-        print(
-            f"{rank}. "
-            f"{habit[0]} | "
-            f"Streak: {habit[1]}"
-        )
-
-
-def show_progress():
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM habits"
-    )
-
-    total = cursor.fetchone()[0]
-
-    if total == 0:
-
-        print("No habits available.")
-        return
-
-    cursor.execute(
-        """
-        SELECT COUNT(*)
-        FROM habits
-        WHERE completed = 1
-        """
-    )
-
-    completed = cursor.fetchone()[0]
-
-    progress = int(
-        (completed / total) * 20
-    )
-
-    print("\n===== Daily Progress =====")
-
-    print(
-        "[" +
-        "#" * progress +
-        "-" * (20 - progress) +
-        "]"
-    )
-
-    print(
-        f"{completed}/{total} habits completed"
-    )
-
-
-def export_csv():
-
-    cursor.execute(
-        """
-        SELECT name,
-               streak,
-               completed
-        FROM habits
-        """
-    )
-
-    habits = cursor.fetchall()
-
-    with open(
-        "habits.csv",
-        "w",
-        newline=""
-    ) as file:
-
-        writer = csv.writer(file)
-
-        writer.writerow(
-            ["Habit", "Streak", "Completed"]
-        )
-
-        writer.writerows(habits)
-
-    print(
-        "Habits exported to habits.csv"
-    )
-
-
-def reset_daily_status():
-
-    cursor.execute(
-        """
-        UPDATE habits
-        SET completed = 0
-        """
-    )
-
-    conn.commit()
-
-    print("Daily status reset.")
-
 
 while True:
 
@@ -241,55 +103,37 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Longest Streak")
-    print("5. Rank Habits")
-    print("6. Progress Dashboard")
-    print("7. Export CSV")
-    print("8. Reset Daily Status")
-    print("9. Exit")
+    print("4. Save Habits")
+    print("5. Load Habits")
+    print("6. Exit")
 
-    choice = input(
-        "Enter your choice: "
-    )
+    option = input("Choose an option: ")
 
-    if choice == "1":
+    if option == "1":
 
         add_habit()
 
-    elif choice == "2":
+    elif option == "2":
 
         view_habits()
 
-    elif choice == "3":
+    elif option == "3":
 
         complete_habit()
 
-    elif choice == "4":
+    elif option == "4":
 
-        show_longest_streak()
+        save_habits()
 
-    elif choice == "5":
+    elif option == "5":
 
-        rank_habits()
+        load_habits()
 
-    elif choice == "6":
-
-        show_progress()
-
-    elif choice == "7":
-
-        export_csv()
-
-    elif choice == "8":
-
-        reset_daily_status()
-
-    elif choice == "9":
+    elif option == "6":
 
         print("Exiting Habit Tracker...")
-        conn.close()
         break
 
     else:
 
-        print("Invalid choice.")
+        print("Invalid option.")
