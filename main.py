@@ -1,6 +1,6 @@
 # habit_tracker.py
 
-import json
+from datetime import datetime
 
 habits = []
 
@@ -11,43 +11,15 @@ def add_habit():
     habits.append({
         "name": habit_name,
         "streak": 0,
-        "completed": False
+        "completed": False,
+        "created_on": datetime.now().strftime("%Y-%m-%d")
     })
 
     print("Habit added successfully!")
 
-def save_habits():
-
-    with open("habits.json", "w") as file:
-
-        json.dump(
-            habits,
-            file,
-            indent=4
-        )
-
-    print("Habits saved successfully!")
-
-def load_habits():
-
-    global habits
-
-    try:
-
-        with open("habits.json", "r") as file:
-
-            habits = json.load(file)
-
-        print("Habits loaded successfully!")
-
-    except FileNotFoundError:
-
-        print("No saved habits found.")
-
 def view_habits():
 
     if not habits:
-
         print("No habits available.")
         return
 
@@ -55,16 +27,13 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = (
-            "✅ Completed"
-            if habit["completed"]
-            else "❌ Pending"
-        )
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
             f"{index}. "
             f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
+            f"Created: {habit['created_on']} | "
             f"Status: {status}"
         )
 
@@ -74,20 +43,22 @@ def complete_habit():
 
     try:
 
-        choice = int(
-            input(
-                "Enter habit number to complete: "
-            )
-        )
+        choice = int(input("Enter habit number to complete: "))
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["completed"] = True
-            habits[choice - 1]["streak"] += 1
+            selected_habit = habits[choice - 1]
 
-            print(
-                "Habit completed successfully!"
-            )
+            if not selected_habit["completed"]:
+
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
+
+                print("Habit completed successfully!")
+
+            else:
+
+                print("Habit already completed today.")
 
         else:
 
@@ -97,15 +68,38 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
+def show_habit_age():
+
+    if not habits:
+        print("No habits available.")
+        return
+
+    print("\n===== Habit Age Report =====")
+
+    today = datetime.now()
+
+    for habit in habits:
+
+        created_date = datetime.strptime(
+            habit["created_on"],
+            "%Y-%m-%d"
+        )
+
+        age = (today - created_date).days
+
+        print(
+            f"{habit['name']} | "
+            f"Tracking for {age} day(s)"
+        )
+
 while True:
 
-    print("\n===== Habit Tracker =====")
+    print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Save Habits")
-    print("5. Load Habits")
-    print("6. Exit")
+    print("4. Habit Age Report")
+    print("5. Exit")
 
     option = input("Choose an option: ")
 
@@ -123,17 +117,13 @@ while True:
 
     elif option == "4":
 
-        save_habits()
+        show_habit_age()
 
     elif option == "5":
-
-        load_habits()
-
-    elif option == "6":
 
         print("Exiting Habit Tracker...")
         break
 
     else:
 
-        print("Invalid option.")
+        print("Invalid option. Please try again.")
