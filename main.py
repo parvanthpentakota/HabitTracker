@@ -1,7 +1,5 @@
 # habit_tracker.py
 
-from datetime import datetime
-
 habits = []
 
 def add_habit():
@@ -11,8 +9,7 @@ def add_habit():
     habits.append({
         "name": habit_name,
         "streak": 0,
-        "completed": False,
-        "created_on": datetime.now().strftime("%Y-%m-%d")
+        "completed": False
     })
 
     print("Habit added successfully!")
@@ -33,7 +30,6 @@ def view_habits():
             f"{index}. "
             f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
-            f"Created: {habit['created_on']} | "
             f"Status: {status}"
         )
 
@@ -58,7 +54,7 @@ def complete_habit():
 
             else:
 
-                print("Habit already completed today.")
+                print("Habit already completed.")
 
         else:
 
@@ -68,29 +64,27 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def show_habit_age():
+def view_statistics():
 
     if not habits:
         print("No habits available.")
         return
 
-    print("\n===== Habit Age Report =====")
+    total_habits = len(habits)
 
-    today = datetime.now()
+    completed_habits = sum(
+        1 for habit in habits
+        if habit["completed"]
+    )
 
-    for habit in habits:
+    completion_rate = (
+        completed_habits / total_habits
+    ) * 100
 
-        created_date = datetime.strptime(
-            habit["created_on"],
-            "%Y-%m-%d"
-        )
-
-        age = (today - created_date).days
-
-        print(
-            f"{habit['name']} | "
-            f"Tracking for {age} day(s)"
-        )
+    print("\n===== Habit Statistics =====")
+    print(f"Total Habits: {total_habits}")
+    print(f"Completed Habits: {completed_habits}")
+    print(f"Completion Rate: {completion_rate:.2f}%")
 
 while True:
 
@@ -98,7 +92,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Habit Age Report")
+    print("4. View Statistics")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -117,7 +111,7 @@ while True:
 
     elif option == "4":
 
-        show_habit_age()
+        view_statistics()
 
     elif option == "5":
 
