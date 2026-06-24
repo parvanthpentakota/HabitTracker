@@ -64,27 +64,28 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def view_statistics():
+def search_habit():
 
-    if not habits:
-        print("No habits available.")
+    keyword = input("Enter habit name to search: ").lower()
+
+    results = [
+        habit for habit in habits
+        if keyword in habit["name"].lower()
+    ]
+
+    if not results:
+
+        print("No matching habits found.")
         return
 
-    total_habits = len(habits)
+    print("\n===== Search Results =====")
 
-    completed_habits = sum(
-        1 for habit in habits
-        if habit["completed"]
-    )
+    for habit in results:
 
-    completion_rate = (
-        completed_habits / total_habits
-    ) * 100
-
-    print("\n===== Habit Statistics =====")
-    print(f"Total Habits: {total_habits}")
-    print(f"Completed Habits: {completed_habits}")
-    print(f"Completion Rate: {completion_rate:.2f}%")
+        print(
+            f"{habit['name']} | "
+            f"Streak: {habit['streak']}"
+        )
 
 while True:
 
@@ -92,7 +93,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Statistics")
+    print("4. Search Habit")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -111,7 +112,7 @@ while True:
 
     elif option == "4":
 
-        view_statistics()
+        search_habit()
 
     elif option == "5":
 
