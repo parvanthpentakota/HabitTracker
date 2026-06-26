@@ -1,7 +1,5 @@
 # habit_tracker.py
 
-import time
-
 habits = []
 
 def add_habit():
@@ -45,10 +43,18 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["completed"] = True
-            habits[choice - 1]["streak"] += 1
+            selected_habit = habits[choice - 1]
 
-            print("Habit completed successfully!")
+            if not selected_habit["completed"]:
+
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
+
+                print("Habit completed successfully!")
+
+            else:
+
+                print("Habit already completed.")
 
         else:
 
@@ -58,27 +64,29 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def remind_habits():
+def edit_habit():
 
-    print("\n===== Habit Reminder =====")
+    view_habits()
 
-    pending = [
-        habit["name"]
-        for habit in habits
-        if not habit["completed"]
-    ]
+    try:
 
-    if not pending:
+        choice = int(input("Enter habit number to edit: "))
 
-        print("🎉 All habits completed today!")
+        if 1 <= choice <= len(habits):
 
-    else:
+            new_name = input("Enter new habit name: ")
 
-        for habit in pending:
+            habits[choice - 1]["name"] = new_name
 
-            print(f"⏰ Don't forget: {habit}")
+            print("Habit updated successfully!")
 
-        print("\nReminder shown at:", time.strftime("%H:%M:%S"))
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
 
 while True:
 
@@ -86,7 +94,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Show Reminders")
+    print("4. Edit Habit")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -105,7 +113,7 @@ while True:
 
     elif option == "4":
 
-        remind_habits()
+        edit_habit()
 
     elif option == "5":
 
