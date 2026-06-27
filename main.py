@@ -64,29 +64,21 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def edit_habit():
+def delete_completed_habits():
 
-    view_habits()
+    global habits
 
-    try:
+    before = len(habits)
 
-        choice = int(input("Enter habit number to edit: "))
+    habits = [
+        habit
+        for habit in habits
+        if not habit["completed"]
+    ]
 
-        if 1 <= choice <= len(habits):
+    removed = before - len(habits)
 
-            new_name = input("Enter new habit name: ")
-
-            habits[choice - 1]["name"] = new_name
-
-            print("Habit updated successfully!")
-
-        else:
-
-            print("Invalid habit number.")
-
-    except ValueError:
-
-        print("Please enter a valid number.")
+    print(f"{removed} completed habit(s) removed.")
 
 while True:
 
@@ -94,7 +86,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Edit Habit")
+    print("4. Delete Completed Habits")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -113,7 +105,7 @@ while True:
 
     elif option == "4":
 
-        edit_habit()
+        delete_completed_habits()
 
     elif option == "5":
 
