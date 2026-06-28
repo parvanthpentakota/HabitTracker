@@ -5,9 +5,11 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
+    category = input("Enter category (Health/Study/Fitness/Coding): ")
 
     habits.append({
         "name": habit_name,
+        "category": category,
         "streak": 0,
         "completed": False
     })
@@ -29,6 +31,7 @@ def view_habits():
         print(
             f"{index}. "
             f"{habit['name']} | "
+            f"Category: {habit['category']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -43,12 +46,12 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected_habit = habits[choice - 1]
+            selected = habits[choice - 1]
 
-            if not selected_habit["completed"]:
+            if not selected["completed"]:
 
-                selected_habit["completed"] = True
-                selected_habit["streak"] += 1
+                selected["completed"] = True
+                selected["streak"] += 1
 
                 print("Habit completed successfully!")
 
@@ -64,29 +67,39 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def delete_completed_habits():
+def view_by_category():
 
-    global habits
+    category = input("Enter category to view: ").lower()
 
-    before = len(habits)
+    print(f"\n===== {category.title()} Habits =====")
 
-    habits = [
-        habit
-        for habit in habits
-        if not habit["completed"]
-    ]
+    found = False
 
-    removed = before - len(habits)
+    for habit in habits:
 
-    print(f"{removed} completed habit(s) removed.")
+        if habit["category"].lower() == category:
+
+            status = "✅" if habit["completed"] else "❌"
+
+            print(
+                f"{habit['name']} | "
+                f"Streak: {habit['streak']} | "
+                f"{status}"
+            )
+
+            found = True
+
+    if not found:
+
+        print("No habits found in this category.")
 
 while True:
 
     print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
-    print("2. View Habits")
+    print("2. View All Habits")
     print("3. Complete Habit")
-    print("4. Delete Completed Habits")
+    print("4. View Habits by Category")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -105,7 +118,7 @@ while True:
 
     elif option == "4":
 
-        delete_completed_habits()
+        view_by_category()
 
     elif option == "5":
 
