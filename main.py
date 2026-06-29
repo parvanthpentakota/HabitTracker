@@ -5,13 +5,12 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    category = input("Enter category (Health/Study/Fitness/Coding): ")
 
     habits.append({
         "name": habit_name,
-        "category": category,
         "streak": 0,
-        "completed": False
+        "completed": False,
+        "weekly_completed": 0
     })
 
     print("Habit added successfully!")
@@ -31,8 +30,8 @@ def view_habits():
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Category: {habit['category']} | "
             f"Streak: {habit['streak']} | "
+            f"Weekly: {habit['weekly_completed']} | "
             f"Status: {status}"
         )
 
@@ -46,18 +45,19 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected = habits[choice - 1]
+            selected_habit = habits[choice - 1]
 
-            if not selected["completed"]:
+            if not selected_habit["completed"]:
 
-                selected["completed"] = True
-                selected["streak"] += 1
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
+                selected_habit["weekly_completed"] += 1
 
                 print("Habit completed successfully!")
 
             else:
 
-                print("Habit already completed.")
+                print("Habit already completed today.")
 
         else:
 
@@ -67,39 +67,28 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def view_by_category():
+def weekly_report():
 
-    category = input("Enter category to view: ").lower()
+    if not habits:
+        print("No habits available.")
+        return
 
-    print(f"\n===== {category.title()} Habits =====")
-
-    found = False
+    print("\n===== Weekly Habit Report =====")
 
     for habit in habits:
 
-        if habit["category"].lower() == category:
-
-            status = "✅" if habit["completed"] else "❌"
-
-            print(
-                f"{habit['name']} | "
-                f"Streak: {habit['streak']} | "
-                f"{status}"
-            )
-
-            found = True
-
-    if not found:
-
-        print("No habits found in this category.")
+        print(
+            f"{habit['name']} -> "
+            f"{habit['weekly_completed']} day(s) completed this week"
+        )
 
 while True:
 
     print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
-    print("2. View All Habits")
+    print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Habits by Category")
+    print("4. Weekly Report")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -118,7 +107,7 @@ while True:
 
     elif option == "4":
 
-        view_by_category()
+        weekly_report()
 
     elif option == "5":
 
