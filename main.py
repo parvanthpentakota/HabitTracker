@@ -1,5 +1,7 @@
 # habit_tracker.py
 
+from datetime import datetime
+
 habits = []
 
 def add_habit():
@@ -10,7 +12,7 @@ def add_habit():
         "name": habit_name,
         "streak": 0,
         "completed": False,
-        "weekly_completed": 0
+        "history": []
     })
 
     print("Habit added successfully!")
@@ -31,7 +33,6 @@ def view_habits():
             f"{index}. "
             f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
-            f"Weekly: {habit['weekly_completed']} | "
             f"Status: {status}"
         )
 
@@ -51,7 +52,10 @@ def complete_habit():
 
                 selected_habit["completed"] = True
                 selected_habit["streak"] += 1
-                selected_habit["weekly_completed"] += 1
+
+                selected_habit["history"].append(
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                )
 
                 print("Habit completed successfully!")
 
@@ -67,20 +71,37 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def weekly_report():
+def view_history():
 
-    if not habits:
-        print("No habits available.")
-        return
+    view_habits()
 
-    print("\n===== Weekly Habit Report =====")
+    try:
 
-    for habit in habits:
+        choice = int(input("Enter habit number to view history: "))
 
-        print(
-            f"{habit['name']} -> "
-            f"{habit['weekly_completed']} day(s) completed this week"
-        )
+        if 1 <= choice <= len(habits):
+
+            selected_habit = habits[choice - 1]
+
+            print(f"\n===== History for {selected_habit['name']} =====")
+
+            if not selected_habit["history"]:
+
+                print("No completion history available.")
+
+            else:
+
+                for record in selected_habit["history"]:
+
+                    print(record)
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
 
 while True:
 
@@ -88,7 +109,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Weekly Report")
+    print("4. View Completion History")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -107,7 +128,7 @@ while True:
 
     elif option == "4":
 
-        weekly_report()
+        view_history()
 
     elif option == "5":
 
