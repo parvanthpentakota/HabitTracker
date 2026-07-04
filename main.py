@@ -5,11 +5,11 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    priority = input("Enter priority (High/Medium/Low): ").capitalize()
+    habit_note = input("Enter a note for this habit: ")
 
     habits.append({
         "name": habit_name,
-        "priority": priority,
+        "note": habit_note,
         "streak": 0,
         "completed": False
     })
@@ -22,34 +22,16 @@ def view_habits():
         print("No habits available.")
         return
 
-    priority_order = {
-        "High": 1,
-        "Medium": 2,
-        "Low": 3
-    }
-
-    sorted_habits = sorted(
-        habits,
-        key=lambda habit: priority_order.get(
-            habit["priority"],
-            4
-        )
-    )
-
     print("\n===== Habit Dashboard =====")
 
-    for index, habit in enumerate(sorted_habits, start=1):
+    for index, habit in enumerate(habits, start=1):
 
-        status = (
-            "✅ Completed"
-            if habit["completed"]
-            else "❌ Pending"
-        )
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
             f"{index}. "
-            f"{habit['name']} | "
-            f"Priority: {habit['priority']} | "
+            f"Habit: {habit['name']} | "
+            f"Note: {habit['note']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -62,28 +44,44 @@ def complete_habit():
 
         choice = int(input("Enter habit number to complete: "))
 
-        priority_order = {
-            "High": 1,
-            "Medium": 2,
-            "Low": 3
-        }
+        if 1 <= choice <= len(habits):
 
-        sorted_habits = sorted(
-            habits,
-            key=lambda habit: priority_order.get(
-                habit["priority"],
-                4
-            )
-        )
+            selected_habit = habits[choice - 1]
 
-        if 1 <= choice <= len(sorted_habits):
+            if not selected_habit["completed"]:
 
-            selected = sorted_habits[choice - 1]
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
 
-            selected["completed"] = True
-            selected["streak"] += 1
+                print("Habit completed successfully!")
 
-            print("Habit completed successfully!")
+            else:
+
+                print("Habit already completed today.")
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
+
+def edit_note():
+
+    view_habits()
+
+    try:
+
+        choice = int(input("Enter habit number to update note: "))
+
+        if 1 <= choice <= len(habits):
+
+            new_note = input("Enter new note: ")
+
+            habits[choice - 1]["note"] = new_note
+
+            print("Habit note updated successfully!")
 
         else:
 
@@ -99,7 +97,8 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Exit")
+    print("4. Edit Habit Note")
+    print("5. Exit")
 
     option = input("Choose an option: ")
 
@@ -116,6 +115,10 @@ while True:
         complete_habit()
 
     elif option == "4":
+
+        edit_note()
+
+    elif option == "5":
 
         print("Exiting Habit Tracker...")
         break
