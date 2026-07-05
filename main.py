@@ -5,11 +5,11 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    habit_note = input("Enter a note for this habit: ")
+    deadline = input("Enter deadline (YYYY-MM-DD): ")
 
     habits.append({
         "name": habit_name,
-        "note": habit_note,
+        "deadline": deadline,
         "streak": 0,
         "completed": False
     })
@@ -31,7 +31,7 @@ def view_habits():
         print(
             f"{index}. "
             f"Habit: {habit['name']} | "
-            f"Note: {habit['note']} | "
+            f"Deadline: {habit['deadline']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
@@ -57,7 +57,7 @@ def complete_habit():
 
             else:
 
-                print("Habit already completed today.")
+                print("Habit already completed.")
 
         else:
 
@@ -67,21 +67,21 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def edit_note():
+def update_deadline():
 
     view_habits()
 
     try:
 
-        choice = int(input("Enter habit number to update note: "))
+        choice = int(input("Enter habit number to update deadline: "))
 
         if 1 <= choice <= len(habits):
 
-            new_note = input("Enter new note: ")
+            new_deadline = input("Enter new deadline (YYYY-MM-DD): ")
 
-            habits[choice - 1]["note"] = new_note
+            habits[choice - 1]["deadline"] = new_deadline
 
-            print("Habit note updated successfully!")
+            print("Deadline updated successfully!")
 
         else:
 
@@ -97,7 +97,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Edit Habit Note")
+    print("4. Update Deadline")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -116,7 +116,7 @@ while True:
 
     elif option == "4":
 
-        edit_note()
+        update_deadline()
 
     elif option == "5":
 
