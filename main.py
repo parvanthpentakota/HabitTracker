@@ -5,12 +5,12 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    deadline = input("Enter deadline (YYYY-MM-DD): ")
+    goal = int(input("Enter target streak: "))
 
     habits.append({
         "name": habit_name,
-        "deadline": deadline,
         "streak": 0,
+        "goal": goal,
         "completed": False
     })
 
@@ -28,11 +28,14 @@ def view_habits():
 
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
+        progress = (
+            f"{habit['streak']}/{habit['goal']}"
+        )
+
         print(
             f"{index}. "
-            f"Habit: {habit['name']} | "
-            f"Deadline: {habit['deadline']} | "
-            f"Streak: {habit['streak']} | "
+            f"{habit['name']} | "
+            f"Progress: {progress} | "
             f"Status: {status}"
         )
 
@@ -46,18 +49,25 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected_habit = habits[choice - 1]
+            selected = habits[choice - 1]
 
-            if not selected_habit["completed"]:
+            if not selected["completed"]:
 
-                selected_habit["completed"] = True
-                selected_habit["streak"] += 1
+                selected["completed"] = True
+                selected["streak"] += 1
 
                 print("Habit completed successfully!")
 
+                if selected["streak"] >= selected["goal"]:
+
+                    print(
+                        f"🎉 Goal achieved for "
+                        f"{selected['name']}!"
+                    )
+
             else:
 
-                print("Habit already completed.")
+                print("Habit already completed today.")
 
         else:
 
@@ -67,29 +77,13 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def update_deadline():
+def reset_daily_status():
 
-    view_habits()
+    for habit in habits:
 
-    try:
+        habit["completed"] = False
 
-        choice = int(input("Enter habit number to update deadline: "))
-
-        if 1 <= choice <= len(habits):
-
-            new_deadline = input("Enter new deadline (YYYY-MM-DD): ")
-
-            habits[choice - 1]["deadline"] = new_deadline
-
-            print("Deadline updated successfully!")
-
-        else:
-
-            print("Invalid habit number.")
-
-    except ValueError:
-
-        print("Please enter a valid number.")
+    print("Daily status reset successfully!")
 
 while True:
 
@@ -97,7 +91,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Update Deadline")
+    print("4. Reset Daily Status")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -116,7 +110,7 @@ while True:
 
     elif option == "4":
 
-        update_deadline()
+        reset_daily_status()
 
     elif option == "5":
 
