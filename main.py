@@ -5,13 +5,12 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    goal = int(input("Enter target streak: "))
 
     habits.append({
         "name": habit_name,
         "streak": 0,
-        "goal": goal,
-        "completed": False
+        "completed": False,
+        "skipped": 0
     })
 
     print("Habit added successfully!")
@@ -28,14 +27,11 @@ def view_habits():
 
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
-        progress = (
-            f"{habit['streak']}/{habit['goal']}"
-        )
-
         print(
             f"{index}. "
-            f"{habit['name']} | "
-            f"Progress: {progress} | "
+            f"Habit: {habit['name']} | "
+            f"Streak: {habit['streak']} | "
+            f"Skipped: {habit['skipped']} | "
             f"Status: {status}"
         )
 
@@ -49,21 +45,14 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected = habits[choice - 1]
+            selected_habit = habits[choice - 1]
 
-            if not selected["completed"]:
+            if not selected_habit["completed"]:
 
-                selected["completed"] = True
-                selected["streak"] += 1
+                selected_habit["completed"] = True
+                selected_habit["streak"] += 1
 
                 print("Habit completed successfully!")
-
-                if selected["streak"] >= selected["goal"]:
-
-                    print(
-                        f"🎉 Goal achieved for "
-                        f"{selected['name']}!"
-                    )
 
             else:
 
@@ -77,13 +66,30 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def reset_daily_status():
+def skip_habit():
 
-    for habit in habits:
+    view_habits()
 
-        habit["completed"] = False
+    try:
 
-    print("Daily status reset successfully!")
+        choice = int(input("Enter habit number to skip: "))
+
+        if 1 <= choice <= len(habits):
+
+            selected_habit = habits[choice - 1]
+
+            selected_habit["completed"] = False
+            selected_habit["skipped"] += 1
+
+            print("Habit skipped for today.")
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
 
 while True:
 
@@ -91,7 +97,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Reset Daily Status")
+    print("4. Skip Habit")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -110,7 +116,7 @@ while True:
 
     elif option == "4":
 
-        reset_daily_status()
+        skip_habit()
 
     elif option == "5":
 
