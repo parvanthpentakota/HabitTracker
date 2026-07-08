@@ -1,5 +1,7 @@
 # habit_tracker.py
 
+from datetime import datetime
+
 habits = []
 
 def add_habit():
@@ -10,7 +12,7 @@ def add_habit():
         "name": habit_name,
         "streak": 0,
         "completed": False,
-        "skipped": 0
+        "completion_dates": []
     })
 
     print("Habit added successfully!")
@@ -29,9 +31,8 @@ def view_habits():
 
         print(
             f"{index}. "
-            f"Habit: {habit['name']} | "
+            f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
-            f"Skipped: {habit['skipped']} | "
             f"Status: {status}"
         )
 
@@ -45,12 +46,16 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected_habit = habits[choice - 1]
+            selected = habits[choice - 1]
 
-            if not selected_habit["completed"]:
+            if not selected["completed"]:
 
-                selected_habit["completed"] = True
-                selected_habit["streak"] += 1
+                selected["completed"] = True
+                selected["streak"] += 1
+
+                today = datetime.now().strftime("%Y-%m-%d")
+
+                selected["completion_dates"].append(today)
 
                 print("Habit completed successfully!")
 
@@ -66,22 +71,29 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def skip_habit():
+def view_completion_calendar():
 
     view_habits()
 
     try:
 
-        choice = int(input("Enter habit number to skip: "))
+        choice = int(input("Enter habit number: "))
 
         if 1 <= choice <= len(habits):
 
-            selected_habit = habits[choice - 1]
+            selected = habits[choice - 1]
 
-            selected_habit["completed"] = False
-            selected_habit["skipped"] += 1
+            print(f"\n===== Completion Calendar: {selected['name']} =====")
 
-            print("Habit skipped for today.")
+            if not selected["completion_dates"]:
+
+                print("No completion records available.")
+
+            else:
+
+                for date in selected["completion_dates"]:
+
+                    print(f"✅ {date}")
 
         else:
 
@@ -97,7 +109,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Skip Habit")
+    print("4. View Completion Calendar")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -116,7 +128,7 @@ while True:
 
     elif option == "4":
 
-        skip_habit()
+        view_completion_calendar()
 
     elif option == "5":
 
