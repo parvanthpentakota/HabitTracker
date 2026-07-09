@@ -1,7 +1,5 @@
 # habit_tracker.py
 
-from datetime import datetime
-
 habits = []
 
 def add_habit():
@@ -10,9 +8,8 @@ def add_habit():
 
     habits.append({
         "name": habit_name,
-        "streak": 0,
-        "completed": False,
-        "completion_dates": []
+        "completed_days": 0,
+        "total_days": 0
     })
 
     print("Habit added successfully!")
@@ -27,51 +24,24 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        percentage = 0
+
+        if habit["total_days"] > 0:
+
+            percentage = (
+                habit["completed_days"] /
+                habit["total_days"]
+            ) * 100
 
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Streak: {habit['streak']} | "
-            f"Status: {status}"
+            f"Completed: {habit['completed_days']} | "
+            f"Tracked: {habit['total_days']} | "
+            f"Success: {percentage:.2f}%"
         )
 
-def complete_habit():
-
-    view_habits()
-
-    try:
-
-        choice = int(input("Enter habit number to complete: "))
-
-        if 1 <= choice <= len(habits):
-
-            selected = habits[choice - 1]
-
-            if not selected["completed"]:
-
-                selected["completed"] = True
-                selected["streak"] += 1
-
-                today = datetime.now().strftime("%Y-%m-%d")
-
-                selected["completion_dates"].append(today)
-
-                print("Habit completed successfully!")
-
-            else:
-
-                print("Habit already completed today.")
-
-        else:
-
-            print("Invalid habit number.")
-
-    except ValueError:
-
-        print("Please enter a valid number.")
-
-def view_completion_calendar():
+def update_habit():
 
     view_habits()
 
@@ -81,19 +51,19 @@ def view_completion_calendar():
 
         if 1 <= choice <= len(habits):
 
+            completed = input(
+                "Completed today? (y/n): "
+            ).lower()
+
             selected = habits[choice - 1]
 
-            print(f"\n===== Completion Calendar: {selected['name']} =====")
+            selected["total_days"] += 1
 
-            if not selected["completion_dates"]:
+            if completed == "y":
 
-                print("No completion records available.")
+                selected["completed_days"] += 1
 
-            else:
-
-                for date in selected["completion_dates"]:
-
-                    print(f"✅ {date}")
+            print("Habit updated successfully!")
 
         else:
 
@@ -103,13 +73,43 @@ def view_completion_calendar():
 
         print("Please enter a valid number.")
 
+def show_best_habit():
+
+    if not habits:
+
+        print("No habits available.")
+        return
+
+    best = max(
+        habits,
+        key=lambda h: (
+            h["completed_days"] /
+            h["total_days"]
+            if h["total_days"] > 0
+            else 0
+        )
+    )
+
+    percentage = (
+        best["completed_days"] /
+        best["total_days"]
+    ) * 100 if best["total_days"] > 0 else 0
+
+    print("\n===== Best Habit =====")
+    print(
+        f"Habit: {best['name']}"
+    )
+    print(
+        f"Success Rate: {percentage:.2f}%"
+    )
+
 while True:
 
-    print("\n===== Habit Tracker Menu =====")
+    print("\n===== Habit Tracker =====")
     print("1. Add Habit")
     print("2. View Habits")
-    print("3. Complete Habit")
-    print("4. View Completion Calendar")
+    print("3. Update Today's Status")
+    print("4. Best Performing Habit")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -124,11 +124,11 @@ while True:
 
     elif option == "3":
 
-        complete_habit()
+        update_habit()
 
     elif option == "4":
 
-        view_completion_calendar()
+        show_best_habit()
 
     elif option == "5":
 
@@ -137,4 +137,4 @@ while True:
 
     else:
 
-        print("Invalid option. Please try again.")
+        print("Invalid option.")
