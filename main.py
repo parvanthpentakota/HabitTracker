@@ -1,6 +1,7 @@
 # habit_tracker.py
 
 habits = []
+archived_habits = []
 
 def add_habit():
 
@@ -8,8 +9,8 @@ def add_habit():
 
     habits.append({
         "name": habit_name,
-        "completed_days": 0,
-        "total_days": 0
+        "streak": 0,
+        "completed": False
     })
 
     print("Habit added successfully!")
@@ -17,53 +18,44 @@ def add_habit():
 def view_habits():
 
     if not habits:
-        print("No habits available.")
+        print("No active habits available.")
         return
 
-    print("\n===== Habit Dashboard =====")
+    print("\n===== Active Habits =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        percentage = 0
-
-        if habit["total_days"] > 0:
-
-            percentage = (
-                habit["completed_days"] /
-                habit["total_days"]
-            ) * 100
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Completed: {habit['completed_days']} | "
-            f"Tracked: {habit['total_days']} | "
-            f"Success: {percentage:.2f}%"
+            f"Streak: {habit['streak']} | "
+            f"Status: {status}"
         )
 
-def update_habit():
+def complete_habit():
 
     view_habits()
 
     try:
 
-        choice = int(input("Enter habit number: "))
+        choice = int(input("Enter habit number to complete: "))
 
         if 1 <= choice <= len(habits):
 
-            completed = input(
-                "Completed today? (y/n): "
-            ).lower()
-
             selected = habits[choice - 1]
 
-            selected["total_days"] += 1
+            if not selected["completed"]:
 
-            if completed == "y":
+                selected["completed"] = True
+                selected["streak"] += 1
 
-                selected["completed_days"] += 1
+                print("Habit completed successfully!")
 
-            print("Habit updated successfully!")
+            else:
+
+                print("Habit already completed today.")
 
         else:
 
@@ -73,44 +65,55 @@ def update_habit():
 
         print("Please enter a valid number.")
 
-def show_best_habit():
+def archive_habit():
 
-    if not habits:
+    view_habits()
 
-        print("No habits available.")
+    try:
+
+        choice = int(input("Enter habit number to archive: "))
+
+        if 1 <= choice <= len(habits):
+
+            archived_habits.append(
+                habits.pop(choice - 1)
+            )
+
+            print("Habit archived successfully!")
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
+
+def view_archived_habits():
+
+    if not archived_habits:
+
+        print("No archived habits.")
         return
 
-    best = max(
-        habits,
-        key=lambda h: (
-            h["completed_days"] /
-            h["total_days"]
-            if h["total_days"] > 0
-            else 0
+    print("\n===== Archived Habits =====")
+
+    for habit in archived_habits:
+
+        print(
+            f"{habit['name']} | "
+            f"Final Streak: {habit['streak']}"
         )
-    )
-
-    percentage = (
-        best["completed_days"] /
-        best["total_days"]
-    ) * 100 if best["total_days"] > 0 else 0
-
-    print("\n===== Best Habit =====")
-    print(
-        f"Habit: {best['name']}"
-    )
-    print(
-        f"Success Rate: {percentage:.2f}%"
-    )
 
 while True:
 
-    print("\n===== Habit Tracker =====")
+    print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
     print("2. View Habits")
-    print("3. Update Today's Status")
-    print("4. Best Performing Habit")
-    print("5. Exit")
+    print("3. Complete Habit")
+    print("4. Archive Habit")
+    print("5. View Archived Habits")
+    print("6. Exit")
 
     option = input("Choose an option: ")
 
@@ -124,17 +127,21 @@ while True:
 
     elif option == "3":
 
-        update_habit()
+        complete_habit()
 
     elif option == "4":
 
-        show_best_habit()
+        archive_habit()
 
     elif option == "5":
+
+        view_archived_habits()
+
+    elif option == "6":
 
         print("Exiting Habit Tracker...")
         break
 
     else:
 
-        print("Invalid option.")
+        print("Invalid option. Please try again.")
