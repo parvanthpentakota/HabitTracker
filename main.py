@@ -5,21 +5,12 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    tags = input(
-        "Enter tags (comma separated): "
-    )
-
-    tag_list = [
-        tag.strip().lower()
-        for tag in tags.split(",")
-        if tag.strip()
-    ]
 
     habits.append({
         "name": habit_name,
-        "tags": tag_list,
         "streak": 0,
-        "completed": False
+        "completed": False,
+        "favorite": False
     })
 
     print("Habit added successfully!")
@@ -34,48 +25,29 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = (
-            "✅ Completed"
-            if habit["completed"]
-            else "❌ Pending"
-        )
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        favorite = "⭐" if habit["favorite"] else ""
 
         print(
             f"{index}. "
-            f"{habit['name']} | "
-            f"Tags: {', '.join(habit['tags'])} | "
+            f"{favorite} {habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
 
-def complete_habit():
+def mark_favorite():
 
     view_habits()
 
     try:
 
-        choice = int(
-            input("Enter habit number: ")
-        )
+        choice = int(input("Enter habit number to mark as favorite: "))
 
         if 1 <= choice <= len(habits):
 
-            habit = habits[choice - 1]
+            habits[choice - 1]["favorite"] = True
 
-            if not habit["completed"]:
-
-                habit["completed"] = True
-                habit["streak"] += 1
-
-                print(
-                    "Habit completed successfully!"
-                )
-
-            else:
-
-                print(
-                    "Habit already completed."
-                )
+            print("Habit marked as favorite!")
 
         else:
 
@@ -83,26 +55,20 @@ def complete_habit():
 
     except ValueError:
 
-        print(
-            "Please enter a valid number."
-        )
+        print("Please enter a valid number.")
 
-def search_by_tag():
+def view_favorites():
 
-    tag = input(
-        "Enter tag to search: "
-    ).strip().lower()
+    print("\n===== Favorite Habits =====")
 
     found = False
 
-    print("\n===== Matching Habits =====")
-
     for habit in habits:
 
-        if tag in habit["tags"]:
+        if habit["favorite"]:
 
             print(
-                f"{habit['name']} | "
+                f"⭐ {habit['name']} | "
                 f"Streak: {habit['streak']}"
             )
 
@@ -110,17 +76,15 @@ def search_by_tag():
 
     if not found:
 
-        print(
-            "No habits found with this tag."
-        )
+        print("No favorite habits found.")
 
 while True:
 
-    print("\n===== Habit Tracker =====")
+    print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
     print("2. View Habits")
-    print("3. Complete Habit")
-    print("4. Search by Tag")
+    print("3. Mark Favorite")
+    print("4. View Favorite Habits")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -135,11 +99,11 @@ while True:
 
     elif option == "3":
 
-        complete_habit()
+        mark_favorite()
 
     elif option == "4":
 
-        search_by_tag()
+        view_favorites()
 
     elif option == "5":
 
@@ -148,4 +112,4 @@ while True:
 
     else:
 
-        print("Invalid option.")
+        print("Invalid option. Please try again.")
