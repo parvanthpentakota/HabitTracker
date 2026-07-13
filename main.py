@@ -8,9 +8,8 @@ def add_habit():
 
     habits.append({
         "name": habit_name,
-        "streak": 0,
         "completed": False,
-        "favorite": False
+        "streak": 0
     })
 
     print("Habit added successfully!")
@@ -26,28 +25,36 @@ def view_habits():
     for index, habit in enumerate(habits, start=1):
 
         status = "✅ Completed" if habit["completed"] else "❌ Pending"
-        favorite = "⭐" if habit["favorite"] else ""
 
         print(
             f"{index}. "
-            f"{favorite} {habit['name']} | "
+            f"{habit['name']} | "
             f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
 
-def mark_favorite():
+def complete_habit():
 
     view_habits()
 
     try:
 
-        choice = int(input("Enter habit number to mark as favorite: "))
+        choice = int(input("Enter habit number to complete: "))
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["favorite"] = True
+            selected = habits[choice - 1]
 
-            print("Habit marked as favorite!")
+            if not selected["completed"]:
+
+                selected["completed"] = True
+                selected["streak"] += 1
+
+                print("Habit completed successfully!")
+
+            else:
+
+                print("Habit already completed today.")
 
         else:
 
@@ -57,34 +64,40 @@ def mark_favorite():
 
         print("Please enter a valid number.")
 
-def view_favorites():
+def check_daily_goal():
 
-    print("\n===== Favorite Habits =====")
+    if not habits:
 
-    found = False
+        print("No habits available.")
+        return
 
-    for habit in habits:
+    completed = sum(
+        1 for habit in habits
+        if habit["completed"]
+    )
 
-        if habit["favorite"]:
+    total = len(habits)
 
-            print(
-                f"⭐ {habit['name']} | "
-                f"Streak: {habit['streak']}"
-            )
+    print("\n===== Daily Goal Status =====")
+    print(f"Completed: {completed}/{total}")
 
-            found = True
+    if completed == total:
 
-    if not found:
+        print("🎉 Congratulations! You completed all your habits today!")
 
-        print("No favorite habits found.")
+    else:
+
+        remaining = total - completed
+
+        print(f"You have {remaining} habit(s) remaining today.")
 
 while True:
 
     print("\n===== Habit Tracker Menu =====")
     print("1. Add Habit")
     print("2. View Habits")
-    print("3. Mark Favorite")
-    print("4. View Favorite Habits")
+    print("3. Complete Habit")
+    print("4. Check Daily Goal")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -99,11 +112,11 @@ while True:
 
     elif option == "3":
 
-        mark_favorite()
+        complete_habit()
 
     elif option == "4":
 
-        view_favorites()
+        check_daily_goal()
 
     elif option == "5":
 
