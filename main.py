@@ -8,8 +8,8 @@ def add_habit():
 
     habits.append({
         "name": habit_name,
-        "completed": False,
-        "streak": 0
+        "completed_count": 0,
+        "completed_today": False
     })
 
     print("Habit added successfully!")
@@ -24,12 +24,16 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        status = (
+            "✅ Completed"
+            if habit["completed_today"]
+            else "❌ Pending"
+        )
 
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Streak: {habit['streak']} | "
+            f"Total Completions: {habit['completed_count']} | "
             f"Status: {status}"
         )
 
@@ -43,12 +47,12 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected = habits[choice - 1]
+            selected_habit = habits[choice - 1]
 
-            if not selected["completed"]:
+            if not selected_habit["completed_today"]:
 
-                selected["completed"] = True
-                selected["streak"] += 1
+                selected_habit["completed_today"] = True
+                selected_habit["completed_count"] += 1
 
                 print("Habit completed successfully!")
 
@@ -64,32 +68,36 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def check_daily_goal():
+def show_leaderboard():
 
     if not habits:
 
         print("No habits available.")
         return
 
-    completed = sum(
-        1 for habit in habits
-        if habit["completed"]
+    ranking = sorted(
+        habits,
+        key=lambda habit: habit["completed_count"],
+        reverse=True
     )
 
-    total = len(habits)
+    print("\n===== Habit Leaderboard =====")
 
-    print("\n===== Daily Goal Status =====")
-    print(f"Completed: {completed}/{total}")
+    for rank, habit in enumerate(ranking, start=1):
 
-    if completed == total:
+        print(
+            f"{rank}. "
+            f"{habit['name']} | "
+            f"Completions: {habit['completed_count']}"
+        )
 
-        print("🎉 Congratulations! You completed all your habits today!")
+def reset_daily_status():
 
-    else:
+    for habit in habits:
 
-        remaining = total - completed
+        habit["completed_today"] = False
 
-        print(f"You have {remaining} habit(s) remaining today.")
+    print("Daily status has been reset.")
 
 while True:
 
@@ -97,8 +105,9 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Check Daily Goal")
-    print("5. Exit")
+    print("4. View Leaderboard")
+    print("5. Reset Daily Status")
+    print("6. Exit")
 
     option = input("Choose an option: ")
 
@@ -116,9 +125,13 @@ while True:
 
     elif option == "4":
 
-        check_daily_goal()
+        show_leaderboard()
 
     elif option == "5":
+
+        reset_daily_status()
+
+    elif option == "6":
 
         print("Exiting Habit Tracker...")
         break
