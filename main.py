@@ -5,11 +5,13 @@ habits = []
 def add_habit():
 
     habit_name = input("Enter habit name: ")
+    difficulty = input("Enter difficulty (Easy/Medium/Hard): ").capitalize()
 
     habits.append({
         "name": habit_name,
-        "completed_count": 0,
-        "completed_today": False
+        "difficulty": difficulty,
+        "streak": 0,
+        "completed": False
     })
 
     print("Habit added successfully!")
@@ -17,6 +19,7 @@ def add_habit():
 def view_habits():
 
     if not habits:
+
         print("No habits available.")
         return
 
@@ -24,16 +27,13 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = (
-            "✅ Completed"
-            if habit["completed_today"]
-            else "❌ Pending"
-        )
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Total Completions: {habit['completed_count']} | "
+            f"Difficulty: {habit['difficulty']} | "
+            f"Streak: {habit['streak']} | "
             f"Status: {status}"
         )
 
@@ -47,12 +47,12 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            selected_habit = habits[choice - 1]
+            selected = habits[choice - 1]
 
-            if not selected_habit["completed_today"]:
+            if not selected["completed"]:
 
-                selected_habit["completed_today"] = True
-                selected_habit["completed_count"] += 1
+                selected["completed"] = True
+                selected["streak"] += 1
 
                 print("Habit completed successfully!")
 
@@ -68,36 +68,27 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def show_leaderboard():
+def difficulty_summary():
 
-    if not habits:
-
-        print("No habits available.")
-        return
-
-    ranking = sorted(
-        habits,
-        key=lambda habit: habit["completed_count"],
-        reverse=True
-    )
-
-    print("\n===== Habit Leaderboard =====")
-
-    for rank, habit in enumerate(ranking, start=1):
-
-        print(
-            f"{rank}. "
-            f"{habit['name']} | "
-            f"Completions: {habit['completed_count']}"
-        )
-
-def reset_daily_status():
+    easy = 0
+    medium = 0
+    hard = 0
 
     for habit in habits:
 
-        habit["completed_today"] = False
+        if habit["difficulty"] == "Easy":
+            easy += 1
 
-    print("Daily status has been reset.")
+        elif habit["difficulty"] == "Medium":
+            medium += 1
+
+        elif habit["difficulty"] == "Hard":
+            hard += 1
+
+    print("\n===== Difficulty Summary =====")
+    print(f"Easy Habits   : {easy}")
+    print(f"Medium Habits : {medium}")
+    print(f"Hard Habits   : {hard}")
 
 while True:
 
@@ -105,9 +96,8 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Leaderboard")
-    print("5. Reset Daily Status")
-    print("6. Exit")
+    print("4. Difficulty Summary")
+    print("5. Exit")
 
     option = input("Choose an option: ")
 
@@ -125,13 +115,9 @@ while True:
 
     elif option == "4":
 
-        show_leaderboard()
+        difficulty_summary()
 
     elif option == "5":
-
-        reset_daily_status()
-
-    elif option == "6":
 
         print("Exiting Habit Tracker...")
         break
