@@ -1,17 +1,18 @@
 # habit_tracker.py
 
+from datetime import datetime
+
 habits = []
 
 def add_habit():
 
     habit_name = input("Enter habit name: ")
-    difficulty = input("Enter difficulty (Easy/Medium/Hard): ").capitalize()
 
     habits.append({
         "name": habit_name,
-        "difficulty": difficulty,
         "streak": 0,
-        "completed": False
+        "completed": False,
+        "last_completed": "Never"
     })
 
     print("Habit added successfully!")
@@ -31,9 +32,9 @@ def view_habits():
 
         print(
             f"{index}. "
-            f"{habit['name']} | "
-            f"Difficulty: {habit['difficulty']} | "
+            f"Habit: {habit['name']} | "
             f"Streak: {habit['streak']} | "
+            f"Last Completed: {habit['last_completed']} | "
             f"Status: {status}"
         )
 
@@ -53,6 +54,9 @@ def complete_habit():
 
                 selected["completed"] = True
                 selected["streak"] += 1
+                selected["last_completed"] = datetime.now().strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
 
                 print("Habit completed successfully!")
 
@@ -68,27 +72,21 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def difficulty_summary():
+def view_last_completion():
 
-    easy = 0
-    medium = 0
-    hard = 0
+    print("\n===== Last Completion Times =====")
+
+    if not habits:
+
+        print("No habits available.")
+        return
 
     for habit in habits:
 
-        if habit["difficulty"] == "Easy":
-            easy += 1
-
-        elif habit["difficulty"] == "Medium":
-            medium += 1
-
-        elif habit["difficulty"] == "Hard":
-            hard += 1
-
-    print("\n===== Difficulty Summary =====")
-    print(f"Easy Habits   : {easy}")
-    print(f"Medium Habits : {medium}")
-    print(f"Hard Habits   : {hard}")
+        print(
+            f"{habit['name']} -> "
+            f"{habit['last_completed']}"
+        )
 
 while True:
 
@@ -96,7 +94,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Difficulty Summary")
+    print("4. View Last Completion Times")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -115,7 +113,7 @@ while True:
 
     elif option == "4":
 
-        difficulty_summary()
+        view_last_completion()
 
     elif option == "5":
 
