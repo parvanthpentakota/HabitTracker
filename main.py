@@ -1,7 +1,5 @@
 # habit_tracker.py
 
-from datetime import datetime
-
 habits = []
 
 def add_habit():
@@ -12,7 +10,7 @@ def add_habit():
         "name": habit_name,
         "streak": 0,
         "completed": False,
-        "last_completed": "Never"
+        "reward": "Not Earned"
     })
 
     print("Habit added successfully!")
@@ -34,7 +32,7 @@ def view_habits():
             f"{index}. "
             f"Habit: {habit['name']} | "
             f"Streak: {habit['streak']} | "
-            f"Last Completed: {habit['last_completed']} | "
+            f"Reward: {habit['reward']} | "
             f"Status: {status}"
         )
 
@@ -54,9 +52,18 @@ def complete_habit():
 
                 selected["completed"] = True
                 selected["streak"] += 1
-                selected["last_completed"] = datetime.now().strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+
+                if selected["streak"] >= 7:
+
+                    selected["reward"] = "🏅 Bronze Badge"
+
+                if selected["streak"] >= 15:
+
+                    selected["reward"] = "🥈 Silver Badge"
+
+                if selected["streak"] >= 30:
+
+                    selected["reward"] = "🥇 Gold Badge"
 
                 print("Habit completed successfully!")
 
@@ -72,20 +79,19 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def view_last_completion():
-
-    print("\n===== Last Completion Times =====")
+def view_rewards():
 
     if not habits:
 
         print("No habits available.")
         return
 
+    print("\n===== Habit Rewards =====")
+
     for habit in habits:
 
         print(
-            f"{habit['name']} -> "
-            f"{habit['last_completed']}"
+            f"{habit['name']} -> {habit['reward']}"
         )
 
 while True:
@@ -94,7 +100,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Last Completion Times")
+    print("4. View Rewards")
     print("5. Exit")
 
     option = input("Choose an option: ")
@@ -113,7 +119,7 @@ while True:
 
     elif option == "4":
 
-        view_last_completion()
+        view_rewards()
 
     elif option == "5":
 
