@@ -1,12 +1,12 @@
 habits = []
 
 def add_habit():
+
     name = input("Enter habit name: ")
 
     habits.append({
         "name": name,
-        "completed": False,
-        "notes": []
+        "completed": False
     })
 
     print("Habit added successfully!")
@@ -14,16 +14,16 @@ def add_habit():
 def view_habits():
 
     if not habits:
-        print("No habits found.")
+        print("No habits available.")
         return
 
     print("\n===== HABITS =====")
 
-    for i, habit in enumerate(habits, start=1):
+    for index, habit in enumerate(habits, start=1):
 
-        status = "Completed" if habit["completed"] else "Pending"
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
-        print(f"{i}. {habit['name']} ({status})")
+        print(f"{index}. {habit['name']} - {status}")
 
 def complete_habit():
 
@@ -32,57 +32,50 @@ def complete_habit():
     if not habits:
         return
 
-    choice = int(input("Enter habit number: "))
+    try:
 
-    if 1 <= choice <= len(habits):
-        habits[choice - 1]["completed"] = True
-        print("Habit marked as completed.")
-    else:
-        print("Invalid choice.")
+        choice = int(input("Enter habit number: "))
 
-def add_note():
+        if 1 <= choice <= len(habits):
 
-    view_habits()
+            habits[choice - 1]["completed"] = True
 
-    if not habits:
-        return
+            print("Habit marked as completed.")
 
-    choice = int(input("Select habit number: "))
-
-    if 1 <= choice <= len(habits):
-
-        note = input("Write your note: ")
-
-        habits[choice - 1]["notes"].append(note)
-
-        print("Note added successfully!")
-
-    else:
-        print("Invalid choice.")
-
-def view_notes():
-
-    view_habits()
-
-    if not habits:
-        return
-
-    choice = int(input("Select habit number: "))
-
-    if 1 <= choice <= len(habits):
-
-        notes = habits[choice - 1]["notes"]
-
-        print(f"\nNotes for {habits[choice-1]['name']}:")
-
-        if not notes:
-            print("No notes available.")
         else:
-            for i, note in enumerate(notes, start=1):
-                print(f"{i}. {note}")
 
-    else:
-        print("Invalid choice.")
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
+
+def search_habit():
+
+    if not habits:
+
+        print("No habits available.")
+        return
+
+    keyword = input("Enter keyword to search: ").lower()
+
+    found = False
+
+    print("\n===== SEARCH RESULTS =====")
+
+    for index, habit in enumerate(habits, start=1):
+
+        if keyword in habit["name"].lower():
+
+            status = "Completed" if habit["completed"] else "Pending"
+
+            print(f"{index}. {habit['name']} - {status}")
+
+            found = True
+
+    if not found:
+
+        print("No matching habits found.")
 
 while True:
 
@@ -90,30 +83,33 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Add Note")
-    print("5. View Notes")
-    print("6. Exit")
+    print("4. Search Habit")
+    print("5. Exit")
 
-    option = input("Choose an option: ")
+    choice = input("Enter your choice: ")
 
-    if option == "1":
+    if choice == "1":
+
         add_habit()
 
-    elif option == "2":
+    elif choice == "2":
+
         view_habits()
 
-    elif option == "3":
+    elif choice == "3":
+
         complete_habit()
 
-    elif option == "4":
-        add_note()
+    elif choice == "4":
 
-    elif option == "5":
-        view_notes()
+        search_habit()
 
-    elif option == "6":
-        print("Goodbye!")
+    elif choice == "5":
+
+        print("Thank you for using Habit Tracker!")
+
         break
 
     else:
-        print("Invalid option.")
+
+        print("Invalid choice.")
