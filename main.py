@@ -1,3 +1,5 @@
+import csv
+
 habits = []
 
 def add_habit():
@@ -6,7 +8,8 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "completed": False
+        "completed": False,
+        "streak": 0
     })
 
     print("Habit added successfully!")
@@ -14,16 +17,21 @@ def add_habit():
 def view_habits():
 
     if not habits:
-        print("No habits available.")
+
+        print("No habits found.")
         return
 
     print("\n===== HABITS =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        status = "Completed" if habit["completed"] else "Pending"
 
-        print(f"{index}. {habit['name']} - {status}")
+        print(
+            f"{index}. {habit['name']} | "
+            f"Status: {status} | "
+            f"Streak: {habit['streak']}"
+        )
 
 def complete_habit():
 
@@ -38,9 +46,16 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["completed"] = True
+            if not habits[choice - 1]["completed"]:
 
-            print("Habit marked as completed.")
+                habits[choice - 1]["completed"] = True
+                habits[choice - 1]["streak"] += 1
+
+                print("Habit completed!")
+
+            else:
+
+                print("Habit already completed today.")
 
         else:
 
@@ -48,34 +63,35 @@ def complete_habit():
 
     except ValueError:
 
-        print("Please enter a valid number.")
+        print("Enter a valid number.")
 
-def search_habit():
+def export_csv():
 
     if not habits:
 
-        print("No habits available.")
+        print("No habits to export.")
         return
 
-    keyword = input("Enter keyword to search: ").lower()
+    with open("habit_report.csv", "w", newline="") as file:
 
-    found = False
+        writer = csv.writer(file)
 
-    print("\n===== SEARCH RESULTS =====")
+        writer.writerow([
+            "Habit Name",
+            "Completed",
+            "Streak"
+        ])
 
-    for index, habit in enumerate(habits, start=1):
+        for habit in habits:
 
-        if keyword in habit["name"].lower():
+            writer.writerow([
+                habit["name"],
+                habit["completed"],
+                habit["streak"]
+            ])
 
-            status = "Completed" if habit["completed"] else "Pending"
-
-            print(f"{index}. {habit['name']} - {status}")
-
-            found = True
-
-    if not found:
-
-        print("No matching habits found.")
+    print("Habit report exported successfully!")
+    print("File created: habit_report.csv")
 
 while True:
 
@@ -83,10 +99,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Search Habit")
+    print("4. Export CSV Report")
     print("5. Exit")
 
-    choice = input("Enter your choice: ")
+    choice = input("Choose an option: ")
 
     if choice == "1":
 
@@ -102,14 +118,13 @@ while True:
 
     elif choice == "4":
 
-        search_habit()
+        export_csv()
 
     elif choice == "5":
 
-        print("Thank you for using Habit Tracker!")
-
+        print("Goodbye!")
         break
 
     else:
 
-        print("Invalid choice.")
+        print("Invalid option.")
