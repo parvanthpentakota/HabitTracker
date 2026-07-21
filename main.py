@@ -1,5 +1,3 @@
-import csv
-
 habits = []
 
 def add_habit():
@@ -8,8 +6,7 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "completed": False,
-        "streak": 0
+        "completed": False
     })
 
     print("Habit added successfully!")
@@ -18,27 +15,25 @@ def view_habits():
 
     if not habits:
 
-        print("No habits found.")
+        print("No habits available.")
         return
 
     print("\n===== HABITS =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "Completed" if habit["completed"] else "Pending"
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
-        print(
-            f"{index}. {habit['name']} | "
-            f"Status: {status} | "
-            f"Streak: {habit['streak']}"
-        )
+        print(f"{index}. {habit['name']} - {status}")
 
 def complete_habit():
 
-    view_habits()
-
     if not habits:
+
+        print("No habits available.")
         return
+
+    view_habits()
 
     try:
 
@@ -46,16 +41,9 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            if not habits[choice - 1]["completed"]:
+            habits[choice - 1]["completed"] = True
 
-                habits[choice - 1]["completed"] = True
-                habits[choice - 1]["streak"] += 1
-
-                print("Habit completed!")
-
-            else:
-
-                print("Habit already completed today.")
+            print("Habit marked as completed.")
 
         else:
 
@@ -63,35 +51,29 @@ def complete_habit():
 
     except ValueError:
 
-        print("Enter a valid number.")
+        print("Please enter a valid number.")
 
-def export_csv():
+def show_completion_percentage():
 
     if not habits:
 
-        print("No habits to export.")
+        print("No habits available.")
         return
 
-    with open("habit_report.csv", "w", newline="") as file:
+    completed = 0
 
-        writer = csv.writer(file)
+    for habit in habits:
 
-        writer.writerow([
-            "Habit Name",
-            "Completed",
-            "Streak"
-        ])
+        if habit["completed"]:
 
-        for habit in habits:
+            completed += 1
 
-            writer.writerow([
-                habit["name"],
-                habit["completed"],
-                habit["streak"]
-            ])
+    percentage = (completed / len(habits)) * 100
 
-    print("Habit report exported successfully!")
-    print("File created: habit_report.csv")
+    print("\n===== DAILY PROGRESS =====")
+    print(f"Completed Habits : {completed}")
+    print(f"Total Habits     : {len(habits)}")
+    print(f"Completion Rate  : {percentage:.2f}%")
 
 while True:
 
@@ -99,10 +81,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Export CSV Report")
+    print("4. Show Completion Percentage")
     print("5. Exit")
 
-    choice = input("Choose an option: ")
+    choice = input("Enter your choice: ")
 
     if choice == "1":
 
@@ -118,13 +100,14 @@ while True:
 
     elif choice == "4":
 
-        export_csv()
+        show_completion_percentage()
 
     elif choice == "5":
 
         print("Goodbye!")
+
         break
 
     else:
 
-        print("Invalid option.")
+        print("Invalid choice.")
