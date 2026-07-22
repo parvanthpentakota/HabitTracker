@@ -1,3 +1,5 @@
+from datetime import datetime
+
 habits = []
 
 def add_habit():
@@ -6,7 +8,8 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "completed": False
+        "completed": False,
+        "monthly_count": {}
     })
 
     print("Habit added successfully!")
@@ -22,7 +25,7 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        status = "Completed" if habit["completed"] else "Pending"
 
         print(f"{index}. {habit['name']} - {status}")
 
@@ -41,9 +44,24 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["completed"] = True
+            habit = habits[choice - 1]
 
-            print("Habit marked as completed.")
+            if habit["completed"]:
+
+                print("Habit already completed today.")
+                return
+
+            habit["completed"] = True
+
+            month = datetime.now().strftime("%B %Y")
+
+            if month not in habit["monthly_count"]:
+
+                habit["monthly_count"][month] = 0
+
+            habit["monthly_count"][month] += 1
+
+            print("Habit completed successfully!")
 
         else:
 
@@ -51,29 +69,30 @@ def complete_habit():
 
     except ValueError:
 
-        print("Please enter a valid number.")
+        print("Enter a valid number.")
 
-def show_completion_percentage():
+def monthly_statistics():
 
     if not habits:
 
         print("No habits available.")
         return
 
-    completed = 0
+    print("\n===== MONTHLY STATISTICS =====")
 
     for habit in habits:
 
-        if habit["completed"]:
+        print(f"\nHabit: {habit['name']}")
 
-            completed += 1
+        if not habit["monthly_count"]:
 
-    percentage = (completed / len(habits)) * 100
+            print("No monthly data available.")
 
-    print("\n===== DAILY PROGRESS =====")
-    print(f"Completed Habits : {completed}")
-    print(f"Total Habits     : {len(habits)}")
-    print(f"Completion Rate  : {percentage:.2f}%")
+        else:
+
+            for month, count in habit["monthly_count"].items():
+
+                print(f"{month}: {count} completion(s)")
 
 while True:
 
@@ -81,7 +100,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Show Completion Percentage")
+    print("4. Monthly Statistics")
     print("5. Exit")
 
     choice = input("Enter your choice: ")
@@ -100,12 +119,11 @@ while True:
 
     elif choice == "4":
 
-        show_completion_percentage()
+        monthly_statistics()
 
     elif choice == "5":
 
         print("Goodbye!")
-
         break
 
     else:
