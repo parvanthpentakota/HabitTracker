@@ -9,7 +9,7 @@ def add_habit():
     habits.append({
         "name": name,
         "completed": False,
-        "monthly_count": {}
+        "history": []
     })
 
     print("Habit added successfully!")
@@ -17,7 +17,6 @@ def add_habit():
 def view_habits():
 
     if not habits:
-
         print("No habits available.")
         return
 
@@ -25,14 +24,13 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "Completed" if habit["completed"] else "Pending"
+        status = "✅ Completed" if habit["completed"] else "❌ Pending"
 
         print(f"{index}. {habit['name']} - {status}")
 
 def complete_habit():
 
     if not habits:
-
         print("No habits available.")
         return
 
@@ -53,13 +51,11 @@ def complete_habit():
 
             habit["completed"] = True
 
-            month = datetime.now().strftime("%B %Y")
+            completion_time = datetime.now().strftime(
+                "%d-%m-%Y %H:%M:%S"
+            )
 
-            if month not in habit["monthly_count"]:
-
-                habit["monthly_count"][month] = 0
-
-            habit["monthly_count"][month] += 1
+            habit["history"].append(completion_time)
 
             print("Habit completed successfully!")
 
@@ -71,28 +67,41 @@ def complete_habit():
 
         print("Enter a valid number.")
 
-def monthly_statistics():
+def view_history():
 
     if not habits:
-
         print("No habits available.")
         return
 
-    print("\n===== MONTHLY STATISTICS =====")
+    view_habits()
 
-    for habit in habits:
+    try:
 
-        print(f"\nHabit: {habit['name']}")
+        choice = int(input("Select habit number: "))
 
-        if not habit["monthly_count"]:
+        if 1 <= choice <= len(habits):
 
-            print("No monthly data available.")
+            habit = habits[choice - 1]
+
+            print(f"\n===== History of {habit['name']} =====")
+
+            if not habit["history"]:
+
+                print("No completion history available.")
+
+            else:
+
+                for index, record in enumerate(habit["history"], start=1):
+
+                    print(f"{index}. {record}")
 
         else:
 
-            for month, count in habit["monthly_count"].items():
+            print("Invalid habit number.")
 
-                print(f"{month}: {count} completion(s)")
+    except ValueError:
+
+        print("Enter a valid number.")
 
 while True:
 
@@ -100,7 +109,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Monthly Statistics")
+    print("4. View Completion History")
     print("5. Exit")
 
     choice = input("Enter your choice: ")
@@ -119,7 +128,7 @@ while True:
 
     elif choice == "4":
 
-        monthly_statistics()
+        view_history()
 
     elif choice == "5":
 
