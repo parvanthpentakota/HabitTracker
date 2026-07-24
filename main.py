@@ -1,15 +1,14 @@
-from datetime import datetime
-
 habits = []
 
 def add_habit():
 
     name = input("Enter habit name: ")
+    category = input("Enter category (Health/Study/Fitness/Work/Personal): ")
 
     habits.append({
         "name": name,
-        "completed": False,
-        "history": []
+        "category": category,
+        "completed": False
     })
 
     print("Habit added successfully!")
@@ -20,13 +19,18 @@ def view_habits():
         print("No habits available.")
         return
 
-    print("\n===== HABITS =====")
+    print("\n===== ALL HABITS =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "✅ Completed" if habit["completed"] else "❌ Pending"
+        status = "Completed" if habit["completed"] else "Pending"
 
-        print(f"{index}. {habit['name']} - {status}")
+        print(
+            f"{index}. "
+            f"{habit['name']} | "
+            f"Category: {habit['category']} | "
+            f"Status: {status}"
+        )
 
 def complete_habit():
 
@@ -42,22 +46,9 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            habit = habits[choice - 1]
+            habits[choice - 1]["completed"] = True
 
-            if habit["completed"]:
-
-                print("Habit already completed today.")
-                return
-
-            habit["completed"] = True
-
-            completion_time = datetime.now().strftime(
-                "%d-%m-%Y %H:%M:%S"
-            )
-
-            habit["history"].append(completion_time)
-
-            print("Habit completed successfully!")
+            print("Habit marked as completed.")
 
         else:
 
@@ -65,43 +56,36 @@ def complete_habit():
 
     except ValueError:
 
-        print("Enter a valid number.")
+        print("Please enter a valid number.")
 
-def view_history():
+def filter_by_category():
 
     if not habits:
         print("No habits available.")
         return
 
-    view_habits()
+    category = input("Enter category to search: ").strip().lower()
 
-    try:
+    print(f"\n===== {category.title()} HABITS =====")
 
-        choice = int(input("Select habit number: "))
+    found = False
 
-        if 1 <= choice <= len(habits):
+    for habit in habits:
 
-            habit = habits[choice - 1]
+        if habit["category"].lower() == category:
 
-            print(f"\n===== History of {habit['name']} =====")
+            status = "Completed" if habit["completed"] else "Pending"
 
-            if not habit["history"]:
+            print(
+                f"{habit['name']} | "
+                f"Status: {status}"
+            )
 
-                print("No completion history available.")
+            found = True
 
-            else:
+    if not found:
 
-                for index, record in enumerate(habit["history"], start=1):
-
-                    print(f"{index}. {record}")
-
-        else:
-
-            print("Invalid habit number.")
-
-    except ValueError:
-
-        print("Enter a valid number.")
+        print("No habits found in this category.")
 
 while True:
 
@@ -109,7 +93,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Completion History")
+    print("4. Filter by Category")
     print("5. Exit")
 
     choice = input("Enter your choice: ")
@@ -128,11 +112,11 @@ while True:
 
     elif choice == "4":
 
-        view_history()
+        filter_by_category()
 
     elif choice == "5":
 
-        print("Goodbye!")
+        print("Thank you for using Habit Tracker!")
         break
 
     else:
