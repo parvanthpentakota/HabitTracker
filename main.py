@@ -1,13 +1,15 @@
+from datetime import datetime
+
 habits = []
 
 def add_habit():
 
     name = input("Enter habit name: ")
-    category = input("Enter category (Health/Study/Fitness/Work/Personal): ")
+    deadline = input("Enter deadline (YYYY-MM-DD): ")
 
     habits.append({
         "name": name,
-        "category": category,
+        "deadline": deadline,
         "completed": False
     })
 
@@ -16,25 +18,48 @@ def add_habit():
 def view_habits():
 
     if not habits:
+
         print("No habits available.")
         return
 
-    print("\n===== ALL HABITS =====")
+    today = datetime.today().date()
+
+    print("\n===== HABITS =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "Completed" if habit["completed"] else "Pending"
+        deadline = datetime.strptime(
+            habit["deadline"],
+            "%Y-%m-%d"
+        ).date()
+
+        if habit["completed"]:
+
+            status = "Completed"
+
+        elif deadline < today:
+
+            status = "Overdue"
+
+        elif deadline == today:
+
+            status = "Due Today"
+
+        else:
+
+            status = "Pending"
 
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Category: {habit['category']} | "
+            f"Deadline: {habit['deadline']} | "
             f"Status: {status}"
         )
 
 def complete_habit():
 
     if not habits:
+
         print("No habits available.")
         return
 
@@ -48,7 +73,7 @@ def complete_habit():
 
             habits[choice - 1]["completed"] = True
 
-            print("Habit marked as completed.")
+            print("Habit completed successfully!")
 
         else:
 
@@ -58,34 +83,33 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def filter_by_category():
+def check_overdue():
 
-    if not habits:
-        print("No habits available.")
-        return
+    today = datetime.today().date()
 
-    category = input("Enter category to search: ").strip().lower()
-
-    print(f"\n===== {category.title()} HABITS =====")
+    print("\n===== OVERDUE HABITS =====")
 
     found = False
 
     for habit in habits:
 
-        if habit["category"].lower() == category:
+        deadline = datetime.strptime(
+            habit["deadline"],
+            "%Y-%m-%d"
+        ).date()
 
-            status = "Completed" if habit["completed"] else "Pending"
+        if deadline < today and not habit["completed"]:
 
             print(
-                f"{habit['name']} | "
-                f"Status: {status}"
+                f"{habit['name']} "
+                f"(Deadline: {habit['deadline']})"
             )
 
             found = True
 
     if not found:
 
-        print("No habits found in this category.")
+        print("No overdue habits.")
 
 while True:
 
@@ -93,7 +117,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Filter by Category")
+    print("4. View Overdue Habits")
     print("5. Exit")
 
     choice = input("Enter your choice: ")
@@ -112,11 +136,11 @@ while True:
 
     elif choice == "4":
 
-        filter_by_category()
+        check_overdue()
 
     elif choice == "5":
 
-        print("Thank you for using Habit Tracker!")
+        print("Goodbye!")
         break
 
     else:
