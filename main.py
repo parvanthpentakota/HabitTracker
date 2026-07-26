@@ -1,19 +1,18 @@
-from datetime import datetime
-
 habits = []
+action_history = []
+
 
 def add_habit():
 
     name = input("Enter habit name: ")
-    deadline = input("Enter deadline (YYYY-MM-DD): ")
 
     habits.append({
         "name": name,
-        "deadline": deadline,
         "completed": False
     })
 
     print("Habit added successfully!")
+
 
 def view_habits():
 
@@ -22,39 +21,14 @@ def view_habits():
         print("No habits available.")
         return
 
-    today = datetime.today().date()
-
     print("\n===== HABITS =====")
 
     for index, habit in enumerate(habits, start=1):
 
-        deadline = datetime.strptime(
-            habit["deadline"],
-            "%Y-%m-%d"
-        ).date()
+        status = "Completed" if habit["completed"] else "Pending"
 
-        if habit["completed"]:
+        print(f"{index}. {habit['name']} - {status}")
 
-            status = "Completed"
-
-        elif deadline < today:
-
-            status = "Overdue"
-
-        elif deadline == today:
-
-            status = "Due Today"
-
-        else:
-
-            status = "Pending"
-
-        print(
-            f"{index}. "
-            f"{habit['name']} | "
-            f"Deadline: {habit['deadline']} | "
-            f"Status: {status}"
-        )
 
 def complete_habit():
 
@@ -71,7 +45,16 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
-            habits[choice - 1]["completed"] = True
+            habit = habits[choice - 1]
+
+            if habit["completed"]:
+
+                print("Habit already completed.")
+                return
+
+            habit["completed"] = True
+
+            action_history.append(choice - 1)
 
             print("Habit completed successfully!")
 
@@ -83,33 +66,20 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def check_overdue():
 
-    today = datetime.today().date()
+def undo_last_completion():
 
-    print("\n===== OVERDUE HABITS =====")
+    if not action_history:
 
-    found = False
+        print("Nothing to undo.")
+        return
 
-    for habit in habits:
+    last_index = action_history.pop()
 
-        deadline = datetime.strptime(
-            habit["deadline"],
-            "%Y-%m-%d"
-        ).date()
+    habits[last_index]["completed"] = False
 
-        if deadline < today and not habit["completed"]:
+    print(f"Undo successful: '{habits[last_index]['name']}' is now pending.")
 
-            print(
-                f"{habit['name']} "
-                f"(Deadline: {habit['deadline']})"
-            )
-
-            found = True
-
-    if not found:
-
-        print("No overdue habits.")
 
 while True:
 
@@ -117,7 +87,7 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Overdue Habits")
+    print("4. Undo Last Completion")
     print("5. Exit")
 
     choice = input("Enter your choice: ")
@@ -136,7 +106,7 @@ while True:
 
     elif choice == "4":
 
-        check_overdue()
+        undo_last_completion()
 
     elif choice == "5":
 
