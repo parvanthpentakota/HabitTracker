@@ -1,6 +1,6 @@
-habits = []
-action_history = []
+from datetime import datetime
 
+habits = []
 
 def add_habit():
 
@@ -8,11 +8,10 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "completed": False
+        "history": []
     })
 
     print("Habit added successfully!")
-
 
 def view_habits():
 
@@ -25,10 +24,7 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        status = "Completed" if habit["completed"] else "Pending"
-
-        print(f"{index}. {habit['name']} - {status}")
-
+        print(f"{index}. {habit['name']}")
 
 def complete_habit():
 
@@ -45,18 +41,19 @@ def complete_habit():
 
         if 1 <= choice <= len(habits):
 
+            today = datetime.now().strftime("%Y-%m-%d")
+
             habit = habits[choice - 1]
 
-            if habit["completed"]:
+            if today not in habit["history"]:
 
-                print("Habit already completed.")
-                return
+                habit["history"].append(today)
 
-            habit["completed"] = True
+                print("Habit completed successfully!")
 
-            action_history.append(choice - 1)
+            else:
 
-            print("Habit completed successfully!")
+                print("Habit already completed today.")
 
         else:
 
@@ -64,22 +61,52 @@ def complete_habit():
 
     except ValueError:
 
-        print("Please enter a valid number.")
+        print("Enter a valid number.")
 
+def show_heatmap():
 
-def undo_last_completion():
+    if not habits:
 
-    if not action_history:
-
-        print("Nothing to undo.")
+        print("No habits available.")
         return
 
-    last_index = action_history.pop()
+    view_habits()
 
-    habits[last_index]["completed"] = False
+    try:
 
-    print(f"Undo successful: '{habits[last_index]['name']}' is now pending.")
+        choice = int(input("Select habit number: "))
 
+        if 1 <= choice <= len(habits):
+
+            habit = habits[choice - 1]
+
+            print(f"\n===== 30-Day Heatmap: {habit['name']} =====")
+
+            for day in range(1, 31):
+
+                date = datetime.now().replace(day=day).strftime("%Y-%m-%d")
+
+                if date in habit["history"]:
+
+                    print("🟩", end=" ")
+
+                else:
+
+                    print("⬜", end=" ")
+
+                if day % 7 == 0:
+
+                    print()
+
+            print()
+
+        else:
+
+            print("Invalid habit number.")
+
+    except ValueError:
+
+        print("Enter a valid number.")
 
 while True:
 
@@ -87,28 +114,28 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Undo Last Completion")
+    print("4. Show 30-Day Heatmap")
     print("5. Exit")
 
-    choice = input("Enter your choice: ")
+    option = input("Enter your choice: ")
 
-    if choice == "1":
+    if option == "1":
 
         add_habit()
 
-    elif choice == "2":
+    elif option == "2":
 
         view_habits()
 
-    elif choice == "3":
+    elif option == "3":
 
         complete_habit()
 
-    elif choice == "4":
+    elif option == "4":
 
-        undo_last_completion()
+        show_heatmap()
 
-    elif choice == "5":
+    elif option == "5":
 
         print("Goodbye!")
         break
