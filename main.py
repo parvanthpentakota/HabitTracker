@@ -1,3 +1,4 @@
+from calendar import monthrange
 from datetime import datetime
 
 habits = []
@@ -37,19 +38,17 @@ def complete_habit():
 
     try:
 
-        choice = int(input("Enter habit number: "))
+        choice = int(input("Select habit number: "))
 
         if 1 <= choice <= len(habits):
 
             today = datetime.now().strftime("%Y-%m-%d")
 
-            habit = habits[choice - 1]
+            if today not in habits[choice - 1]["history"]:
 
-            if today not in habit["history"]:
+                habits[choice - 1]["history"].append(today)
 
-                habit["history"].append(today)
-
-                print("Habit completed successfully!")
+                print("Habit completed!")
 
             else:
 
@@ -61,9 +60,9 @@ def complete_habit():
 
     except ValueError:
 
-        print("Enter a valid number.")
+        print("Please enter a valid number.")
 
-def show_heatmap():
+def show_calendar():
 
     if not habits:
 
@@ -76,37 +75,35 @@ def show_heatmap():
 
         choice = int(input("Select habit number: "))
 
-        if 1 <= choice <= len(habits):
-
-            habit = habits[choice - 1]
-
-            print(f"\n===== 30-Day Heatmap: {habit['name']} =====")
-
-            for day in range(1, 31):
-
-                date = datetime.now().replace(day=day).strftime("%Y-%m-%d")
-
-                if date in habit["history"]:
-
-                    print("🟩", end=" ")
-
-                else:
-
-                    print("⬜", end=" ")
-
-                if day % 7 == 0:
-
-                    print()
-
-            print()
-
-        else:
+        if not (1 <= choice <= len(habits)):
 
             print("Invalid habit number.")
+            return
+
+        year = int(input("Enter year (YYYY): "))
+        month = int(input("Enter month (1-12): "))
+
+        days = monthrange(year, month)[1]
+
+        habit = habits[choice - 1]
+
+        print(f"\n===== {habit['name']} Calendar =====")
+
+        for day in range(1, days + 1):
+
+            date = f"{year}-{month:02d}-{day:02d}"
+
+            if date in habit["history"]:
+
+                print(f"{day:02d} ✅")
+
+            else:
+
+                print(f"{day:02d} ❌")
 
     except ValueError:
 
-        print("Enter a valid number.")
+        print("Invalid input.")
 
 while True:
 
@@ -114,10 +111,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Show 30-Day Heatmap")
+    print("4. Show Monthly Calendar")
     print("5. Exit")
 
-    option = input("Enter your choice: ")
+    option = input("Choose an option: ")
 
     if option == "1":
 
@@ -133,7 +130,7 @@ while True:
 
     elif option == "4":
 
-        show_heatmap()
+        show_calendar()
 
     elif option == "5":
 
@@ -142,4 +139,4 @@ while True:
 
     else:
 
-        print("Invalid choice.")
+        print("Invalid option.")
