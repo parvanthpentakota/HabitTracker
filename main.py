@@ -1,7 +1,7 @@
-from calendar import monthrange
 from datetime import datetime
 
 habits = []
+
 
 def add_habit():
 
@@ -9,10 +9,16 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "history": []
+        "time_stats": {
+            "Morning": 0,
+            "Afternoon": 0,
+            "Evening": 0,
+            "Night": 0
+        }
     })
 
     print("Habit added successfully!")
+
 
 def view_habits():
 
@@ -27,6 +33,28 @@ def view_habits():
 
         print(f"{index}. {habit['name']}")
 
+
+def get_time_period():
+
+    hour = datetime.now().hour
+
+    if 5 <= hour < 12:
+
+        return "Morning"
+
+    elif 12 <= hour < 17:
+
+        return "Afternoon"
+
+    elif 17 <= hour < 21:
+
+        return "Evening"
+
+    else:
+
+        return "Night"
+
+
 def complete_habit():
 
     if not habits:
@@ -38,21 +66,17 @@ def complete_habit():
 
     try:
 
-        choice = int(input("Select habit number: "))
+        choice = int(input("Enter habit number: "))
 
         if 1 <= choice <= len(habits):
 
-            today = datetime.now().strftime("%Y-%m-%d")
+            habit = habits[choice - 1]
 
-            if today not in habits[choice - 1]["history"]:
+            period = get_time_period()
 
-                habits[choice - 1]["history"].append(today)
+            habit["time_stats"][period] += 1
 
-                print("Habit completed!")
-
-            else:
-
-                print("Habit already completed today.")
+            print(f"Habit completed during {period}!")
 
         else:
 
@@ -62,48 +86,24 @@ def complete_habit():
 
         print("Please enter a valid number.")
 
-def show_calendar():
+
+def view_time_statistics():
 
     if not habits:
 
         print("No habits available.")
         return
 
-    view_habits()
+    print("\n===== TIME ANALYTICS =====")
 
-    try:
+    for habit in habits:
 
-        choice = int(input("Select habit number: "))
+        print(f"\nHabit: {habit['name']}")
 
-        if not (1 <= choice <= len(habits)):
+        for period, count in habit["time_stats"].items():
 
-            print("Invalid habit number.")
-            return
+            print(f"{period}: {count}")
 
-        year = int(input("Enter year (YYYY): "))
-        month = int(input("Enter month (1-12): "))
-
-        days = monthrange(year, month)[1]
-
-        habit = habits[choice - 1]
-
-        print(f"\n===== {habit['name']} Calendar =====")
-
-        for day in range(1, days + 1):
-
-            date = f"{year}-{month:02d}-{day:02d}"
-
-            if date in habit["history"]:
-
-                print(f"{day:02d} ✅")
-
-            else:
-
-                print(f"{day:02d} ❌")
-
-    except ValueError:
-
-        print("Invalid input.")
 
 while True:
 
@@ -111,28 +111,28 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. Show Monthly Calendar")
+    print("4. View Time Analytics")
     print("5. Exit")
 
-    option = input("Choose an option: ")
+    choice = input("Choose an option: ")
 
-    if option == "1":
+    if choice == "1":
 
         add_habit()
 
-    elif option == "2":
+    elif choice == "2":
 
         view_habits()
 
-    elif option == "3":
+    elif choice == "3":
 
         complete_habit()
 
-    elif option == "4":
+    elif choice == "4":
 
-        show_calendar()
+        view_time_statistics()
 
-    elif option == "5":
+    elif choice == "5":
 
         print("Goodbye!")
         break
