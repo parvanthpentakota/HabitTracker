@@ -1,6 +1,6 @@
-from datetime import datetime
-
 habits = []
+
+MILESTONES = [10, 25, 50, 100]
 
 
 def add_habit():
@@ -9,12 +9,8 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "time_stats": {
-            "Morning": 0,
-            "Afternoon": 0,
-            "Evening": 0,
-            "Night": 0
-        }
+        "completion_count": 0,
+        "milestones": []
     })
 
     print("Habit added successfully!")
@@ -31,28 +27,11 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
-        print(f"{index}. {habit['name']}")
-
-
-def get_time_period():
-
-    hour = datetime.now().hour
-
-    if 5 <= hour < 12:
-
-        return "Morning"
-
-    elif 12 <= hour < 17:
-
-        return "Afternoon"
-
-    elif 17 <= hour < 21:
-
-        return "Evening"
-
-    else:
-
-        return "Night"
+        print(
+            f"{index}. "
+            f"{habit['name']} | "
+            f"Completions: {habit['completion_count']}"
+        )
 
 
 def complete_habit():
@@ -72,11 +51,20 @@ def complete_habit():
 
             habit = habits[choice - 1]
 
-            period = get_time_period()
+            habit["completion_count"] += 1
 
-            habit["time_stats"][period] += 1
+            count = habit["completion_count"]
 
-            print(f"Habit completed during {period}!")
+            if count in MILESTONES:
+
+                habit["milestones"].append(count)
+
+                print(f"🎉 Congratulations!")
+                print(f"You unlocked the {count} completion milestone!")
+
+            else:
+
+                print("Habit completed successfully!")
 
         else:
 
@@ -87,22 +75,28 @@ def complete_habit():
         print("Please enter a valid number.")
 
 
-def view_time_statistics():
+def view_milestones():
 
     if not habits:
 
         print("No habits available.")
         return
 
-    print("\n===== TIME ANALYTICS =====")
+    print("\n===== MILESTONES =====")
 
     for habit in habits:
 
-        print(f"\nHabit: {habit['name']}")
+        print(f"\n{habit['name']}")
 
-        for period, count in habit["time_stats"].items():
+        if not habit["milestones"]:
 
-            print(f"{period}: {count}")
+            print("No milestones achieved yet.")
+
+        else:
+
+            for milestone in habit["milestones"]:
+
+                print(f"🏆 {milestone} Completions")
 
 
 while True:
@@ -111,10 +105,10 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Time Analytics")
+    print("4. View Milestones")
     print("5. Exit")
 
-    choice = input("Choose an option: ")
+    choice = input("Enter your choice: ")
 
     if choice == "1":
 
@@ -130,7 +124,7 @@ while True:
 
     elif choice == "4":
 
-        view_time_statistics()
+        view_milestones()
 
     elif choice == "5":
 
@@ -139,4 +133,4 @@ while True:
 
     else:
 
-        print("Invalid option.")
+        print("Invalid choice.")
