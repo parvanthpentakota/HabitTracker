@@ -1,7 +1,5 @@
 habits = []
 
-MILESTONES = [10, 25, 50, 100]
-
 
 def add_habit():
 
@@ -9,8 +7,9 @@ def add_habit():
 
     habits.append({
         "name": name,
-        "completion_count": 0,
-        "milestones": []
+        "current_streak": 0,
+        "best_streak": 0,
+        "completed_today": False
     })
 
     print("Habit added successfully!")
@@ -27,10 +26,18 @@ def view_habits():
 
     for index, habit in enumerate(habits, start=1):
 
+        status = (
+            "Completed"
+            if habit["completed_today"]
+            else "Pending"
+        )
+
         print(
             f"{index}. "
             f"{habit['name']} | "
-            f"Completions: {habit['completion_count']}"
+            f"Current Streak: {habit['current_streak']} | "
+            f"Best Streak: {habit['best_streak']} | "
+            f"Status: {status}"
         )
 
 
@@ -51,20 +58,21 @@ def complete_habit():
 
             habit = habits[choice - 1]
 
-            habit["completion_count"] += 1
+            if habit["completed_today"]:
 
-            count = habit["completion_count"]
+                print("Habit already completed today.")
+                return
 
-            if count in MILESTONES:
+            habit["completed_today"] = True
+            habit["current_streak"] += 1
 
-                habit["milestones"].append(count)
+            if habit["current_streak"] > habit["best_streak"]:
 
-                print(f"🎉 Congratulations!")
-                print(f"You unlocked the {count} completion milestone!")
+                habit["best_streak"] = habit["current_streak"]
 
-            else:
+                print("🎉 New personal best!")
 
-                print("Habit completed successfully!")
+            print("Habit completed successfully!")
 
         else:
 
@@ -75,28 +83,39 @@ def complete_habit():
         print("Please enter a valid number.")
 
 
-def view_milestones():
+def reset_day():
 
     if not habits:
 
         print("No habits available.")
         return
 
-    print("\n===== MILESTONES =====")
+    for habit in habits:
+
+        if not habit["completed_today"]:
+
+            habit["current_streak"] = 0
+
+        habit["completed_today"] = False
+
+    print("New day started successfully!")
+
+
+def show_best_records():
+
+    if not habits:
+
+        print("No habits available.")
+        return
+
+    print("\n===== PERSONAL BESTS =====")
 
     for habit in habits:
 
-        print(f"\n{habit['name']}")
-
-        if not habit["milestones"]:
-
-            print("No milestones achieved yet.")
-
-        else:
-
-            for milestone in habit["milestones"]:
-
-                print(f"🏆 {milestone} Completions")
+        print(
+            f"{habit['name']} : "
+            f"{habit['best_streak']} days"
+        )
 
 
 while True:
@@ -105,8 +124,9 @@ while True:
     print("1. Add Habit")
     print("2. View Habits")
     print("3. Complete Habit")
-    print("4. View Milestones")
-    print("5. Exit")
+    print("4. Start New Day")
+    print("5. View Personal Bests")
+    print("6. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -124,9 +144,13 @@ while True:
 
     elif choice == "4":
 
-        view_milestones()
+        reset_day()
 
     elif choice == "5":
+
+        show_best_records()
+
+    elif choice == "6":
 
         print("Goodbye!")
         break
